@@ -1,6 +1,6 @@
 {
   "name": "llm-doc-skills",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Cross-compatible LLM skills for document workflows: Word, PowerPoint, Excel, and PDF creation, editing, and conversion via OOXML and Python.",
   "author": {
     "name": "Alison Aquinas"
