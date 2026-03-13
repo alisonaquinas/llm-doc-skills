@@ -280,7 +280,7 @@ to prevent encoding corruption:
 | `'` | `&#x2019;` | Right single quotation mark / apostrophe |
 | `–` | `&#x2013;` | En dash |
 | `—` | `&#x2014;` | Em dash |
-| ` ` | `&#xA0;`   | Non-breaking space |
+| &nbsp; | `&#xA0;`   | Non-breaking space |
 
 `unpack.py` converts these automatically on extraction; `pack.py` preserves them.
 
