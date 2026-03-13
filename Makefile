@@ -3,6 +3,7 @@
 .SECONDEXPANSION:
 
 # Variables
+PYTHON ?= python
 SKILLS := $(sort $(patsubst %/SKILL.md,%,$(wildcard */SKILL.md)))
 BUILD_DIR := built
 ZIP_FILES := $(addprefix $(BUILD_DIR)/,$(addsuffix -skill.zip,$(SKILLS)))
@@ -96,9 +97,9 @@ lint:
 	@ruff check --select E,F,W,I --ignore E501 \
 		$$(find . -name "*.py" -not -path "./built/*" -not -path "./.git/*") || exit 1
 	@echo "==> Skill structure (L01–L11)..."
-	@python3 scripts/lint_skills.py || exit 1
+	@$(PYTHON) scripts/lint_skills.py || exit 1
 	@echo "==> Skill quality pre-flight (V01–V08)..."
-	@python3 scripts/validate_skills.py || exit 1
+	@$(PYTHON) scripts/validate_skills.py || exit 1
 	@echo ""
 	@echo "Lint passed."
 
@@ -109,7 +110,7 @@ lint:
 # Run Python unit tests (stdlib only — no LibreOffice, Poppler, or python-docx)
 test-unit:
 	@echo "Running unit tests..."
-	@python3 -m unittest discover -s tests -v
+	@$(PYTHON) -m unittest discover -s tests -v
 
 # Main repo gate: lint + unit tests
 test: lint test-unit
