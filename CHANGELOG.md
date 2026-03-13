@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.2] - 2026-03-13
+
+### Fixed
+
+- `office-custom/SKILL.md`: replaced bare space inside code span (MD038) with
+  `&nbsp;` HTML entity to satisfy markdownlint `no-space-in-code` rule.
+- `.github/workflows/ci.yml`: added `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true`
+  to silence Node.js 20 deprecation warnings from third-party actions.
+- `.github/workflows/release.yml`: same Node.js 24 env var as ci.yml.
+
 ## [0.0.1] - 2026-03-13
 
 ### Added
