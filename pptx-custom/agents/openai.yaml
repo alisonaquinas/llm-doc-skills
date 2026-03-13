@@ -1,0 +1,6 @@
+interface:
+  display_name: "PowerPoint Presentation (.pptx) Skill - Custom"
+  short_description: "Create, edit, and design professional presentations"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  default_prompt: "Use $pptx-custom to create or edit PowerPoint presentations with consistent design and visual elements."

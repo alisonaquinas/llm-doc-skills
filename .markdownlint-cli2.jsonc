@@ -1,0 +1,16 @@
+{
+  "config": {
+    "default": true,
+    "MD013": false,
+    "MD026": false,
+    "MD033": false,
+    "MD032": false,
+    "MD060": false
+  },
+  "ignores": [
+    ".git/",
+    "built/",
+    "node_modules/",
+    ".venv/"
+  ]
+}

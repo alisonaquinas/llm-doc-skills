@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(for dir:*)",
+      "Bash(do echo:*)",
+      "Read(//Users/allisonaquinas/AntropicSkills/$dir/**)",
+      "Bash(done)",
+      "Bash(rm -f *-skill.zip)",
+      "Bash(make help:*)",
+      "Bash(make clean:*)",
+      "Bash(make build:*)",
+      "WebFetch(domain:openpyxl.readthedocs.io)",
+      "WebFetch(domain:python-docx.readthedocs.io)",
+      "WebFetch(domain:pypdf.readthedocs.io)",
+      "WebFetch(domain:gitbrent.github.io)",
+      "WebFetch(domain:docs.reportlab.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Read(//private/tmp/**)",
+      "Bash(python3 -c \":*)",
+      "Bash(python3 -m unittest discover -s tests -v)",
+      "Bash(python3 -m unittest discover -s tests)",
+      "Bash(make test:*)",
+      "Bash(markdownlint-cli2 --fix \"**/*.md\")",
+      "Bash(markdownlint-cli2 \"**/*.md\")",
+      "Bash(make lint:*)"
+    ]
+  }
+}

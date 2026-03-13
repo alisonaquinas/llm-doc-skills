@@ -1,0 +1,33 @@
+# Auto-detect text files and normalize line endings to LF
+* text=auto eol=lf
+
+# Explicitly declare text files
+*.md        text eol=lf
+*.txt       text eol=lf
+*.yaml      text eol=lf
+*.yml       text eol=lf
+*.json      text eol=lf
+*.js        text eol=lf
+*.ts        text eol=lf
+*.py        text eol=lf
+*.sh        text eol=lf
+Makefile    text eol=lf
+
+# Binary files — no line ending conversion, no diff
+*.docx      binary
+*.xlsx      binary
+*.pptx      binary
+*.pdf       binary
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.bmp       binary
+*.ico       binary
+*.zip       binary
+
+# Mark ZIP skill bundles as binary
+built/*.zip binary
+
+# Linguist overrides — treat SKILL.md files as documentation
+**/SKILL.md linguist-documentation

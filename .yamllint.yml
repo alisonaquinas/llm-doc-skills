@@ -1,0 +1,17 @@
+extends: default
+
+rules:
+  line-length:
+    max: 200
+    level: warning
+  document-start:
+    present: false
+  truthy:
+    allowed-values: ["true", "false"]
+    check-keys: true
+
+ignore: |
+  .git/
+  built/
+  node_modules/
+  .venv/
