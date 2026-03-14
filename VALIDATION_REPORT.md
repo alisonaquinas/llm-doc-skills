@@ -5,32 +5,36 @@ Repository: `llm-doc-skills`
 
 ## Summary
 
-The repository has been refreshed so the docs, packaged artifacts, and agent
-metadata point at the current `llm-doc-skills` layout instead of the earlier
-legacy naming and path scheme.
+The repository now covers both OOXML-heavy document workflows and text-first
+publishing workflows. In addition to the original Word, PowerPoint, Excel, and
+PDF skill set, the repo now includes packaged skills for Pandoc, LaTeX, Typst,
+Markdown, and AsciiDoc.
 
 ## Implemented Changes
 
-- canonical repo naming updated to `llm-doc-skills`
-- missing companion docs added for PDF forms, advanced PDF reference, PPTX
-  editing, and PPTX generation
-- Claude and OpenAI agent manifests aligned across all packaged skills
-- stale script examples updated to `office-custom/scripts/...` and
-  `docx-custom/scripts/...`
-- repo-local `.markdownlint-cli2.jsonc` added for consistent Markdown policy
-- Markdown normalization applied across the docs tree
+- retained the existing OOXML, spreadsheet, presentation, and PDF skill set
+- added packaged text-first publishing skills: `pandoc`, `latex`, `typst`,
+  `markdown`, and `asciidoc`
+- added companion `references/` docs for the new skills so deep guidance stays
+  available without pushing primary `SKILL.md` files over lint thresholds
+- added repo-owned wrapper scripts for common conversion, build, render, and
+  export flows in the new skill directories
+- added stdlib-only wrapper tests that validate command construction and
+  missing-tool failure messages without requiring external binaries
+- updated repo-facing docs and metadata to describe the expanded skill surface
 
 ## Current Validation Targets
 
-- search-based checks should find no stale primary references to legacy repo
-  names, obsolete skill paths, or old absolute workspace paths
-- every skill package should include both `agents/claude.yaml` and
+- every skill package includes `SKILL.md`, `agents/claude.yaml`, and
   `agents/openai.yaml`
-- rebuilt ZIP artifacts should use `llm-doc-skills/` as their archive root
+- new text-first skill docs pass repo markdownlint policy
+- wrapper command builders remain testable without Pandoc, a TeX distribution,
+  Typst, `cmark-gfm`, or Asciidoctor installed
+- rebuilt ZIP artifacts continue to use `llm-doc-skills/` as their archive root
 
 ## Markdown Notes
 
-The repo now includes a local markdownlint policy:
+The repo includes a local markdownlint policy:
 
 ```jsonc
 {
@@ -38,28 +42,33 @@ The repo now includes a local markdownlint policy:
   "rules": {
     "MD013": false,
     "MD026": false,
-    "MD033": false
+    "MD033": false,
+    "MD024": false
   }
 }
 ```
 
-This environment does not currently provide `markdownlint-cli2`,
-`markdownlint`, `npm`, or `npx`, so Markdown verification is done here with
-repo-local structural checks plus the new config file.
-
 ## Verification Results
 
-- search-based stale-reference scan: clean
-- Markdown structural checks: clean for trailing spaces and unlabeled opening
-  fences
-- Python helper compilation: passed with `PYTHONPYCACHEPREFIX=/tmp/pycache`
-- package rebuild: `make build` passed
-- archive validation: `make verify` passed for all generated ZIPs
-- archive root check: sampled ZIP contents now use `llm-doc-skills/`
-- agent metadata check: every packaged skill includes both Claude and OpenAI
-  manifests
+Passed for the new skill expansion:
+
+- `python scripts/lint_skills.py pandoc latex typst markdown asciidoc`
+- `python scripts/validate_skills.py pandoc latex typst markdown asciidoc`
+- `python -m unittest tests.test_document_wrappers`
+- `python -m unittest tests.test_packaging`
+- `python -m py_compile` across the new wrapper scripts
+- `npx markdownlint-cli2` across the new skill docs plus repo `README.md` and `CHANGELOG.md`
+
+Environment-limited checks:
+
+- `make build`, `make verify`, and `make test` are currently blocked in this
+  environment because the local Bash service fails before the Makefile begins.
+- `python -m unittest discover -s tests -v` still encounters pre-existing temp
+  directory permission failures in the legacy OOXML validation tests on this
+  Windows/Python setup.
 
 ## Packaging Status
 
-All packaged skills were rebuilt successfully and validated as readable ZIPs in
-`built/`.
+The source tree is normalized for the expanded skill set and passes the skill-
+level packaging and structural checks. Full ZIP rebuild verification still
+depends on a working Unix-shell path for the Makefile-driven packaging steps.

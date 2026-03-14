@@ -16,6 +16,11 @@ manifests, assets, and helper scripts as needed.
 | `pdf-custom` | PDF extraction, OCR, forms, and generation |
 | `pptx-custom` | Presentation generation, editing, and visual QA |
 | `xlsx-custom` | Spreadsheet modeling, formulas, and recalculation |
+| `pandoc` | Cross-format conversion, metadata-driven publishing, templates, and citations |
+| `latex` | LaTeX authoring, engine selection, compile loops, and TeX toolchain troubleshooting |
+| `typst` | Typst-native authoring, layout control, and export workflows |
+| `markdown` | CommonMark and GFM authoring plus lightweight rendering and export |
+| `asciidoc` | AsciiDoc authoring, attributes, includes, and Asciidoctor backends |
 
 ## Core Workflows
 
@@ -60,6 +65,17 @@ Read [pdf-custom/SKILL.md](pdf-custom/SKILL.md) first, then branch to:
 - [pdf-custom/FORMS.md](pdf-custom/FORMS.md) for AcroForms
 - [pdf-custom/REFERENCE.md](pdf-custom/REFERENCE.md) for advanced operations
 
+### Text-first publishing workflows
+
+Use the text-first skills when the task is centered on authoring or publishing
+from plain-text sources rather than OOXML packages.
+
+- use [pandoc/SKILL.md](pandoc/SKILL.md) for cross-format conversion and publishing
+- use [latex/SKILL.md](latex/SKILL.md) for LaTeX authoring and build orchestration
+- use [typst/SKILL.md](typst/SKILL.md) for Typst-native layout and export
+- use [markdown/SKILL.md](markdown/SKILL.md) for CommonMark and GFM docs work
+- use [asciidoc/SKILL.md](asciidoc/SKILL.md) for Asciidoctor publishing flows
+
 ## Important Implementation Notes
 
 - Word tables need explicit widths at both the table and cell level.
@@ -67,6 +83,10 @@ Read [pdf-custom/SKILL.md](pdf-custom/SKILL.md) first, then branch to:
 - Presentation work should avoid text-only slides and always go through QA.
 - ReportLab PDFs should use `<sub>` and `<super>` markup instead of Unicode
   subscript and superscript characters.
+- Text-first wrapper scripts should keep command construction testable without
+  requiring the external binary in unit tests.
+- External publishing tools such as Pandoc, latexmk, Typst, `cmark-gfm`, and
+  Asciidoctor are optional system prerequisites rather than vendored repo dependencies.
 
 ## Packaging and Verification
 

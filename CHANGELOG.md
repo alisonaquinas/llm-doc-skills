@@ -7,11 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- New packaged text-first publishing skills: `pandoc`, `latex`, `typst`, `markdown`, and `asciidoc`.
+- Repo-owned wrapper CLIs for common conversion, build, render, and export flows under the new skill `scripts/` directories.
+- Companion `references/` docs for the new skills so authoritative guidance stays deep without pushing `SKILL.md` over repo lint thresholds.
+- Packaging and wrapper tests covering the new skills and their command-builder surfaces.
+
 ## [0.0.5] - 2026-03-13
 
 ### Fixed
 
-- .markdownlint-cli2.jsonc: disable MD024 for changelog-style repeated release headings so CHANGELOG.md passes the Markdown job.
+- `.markdownlint-cli2.jsonc`: disable MD024 for changelog-style repeated release headings so CHANGELOG.md passes the Markdown job.
 
 ## [0.0.4] - 2026-03-13
 

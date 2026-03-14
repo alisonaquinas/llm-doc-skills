@@ -1,0 +1,6 @@
+interface:
+  display_name: "AsciiDoc and Asciidoctor Skill"
+  short_description: "Publish AsciiDoc with Asciidoctor backends"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  default_prompt: "Use $asciidoc when a task involves AsciiDoc syntax, document attributes, includes, conditionals, Asciidoctor publishing, or HTML, PDF, and DocBook export flows."

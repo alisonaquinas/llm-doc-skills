@@ -1,0 +1,6 @@
+interface:
+  display_name: "Typst Authoring and Export Skill"
+  short_description: "Write and export Typst documents with confidence"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  default_prompt: "Use $typst when a task involves Typst authoring, layout rules, math, references, templates, or Typst CLI compile and export workflows."

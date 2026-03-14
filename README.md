@@ -1,8 +1,9 @@
 # llm-doc-skills
 
 `llm-doc-skills` is a repository of packaged skills for working with common
-document formats. The repo is designed to ship cleanly for both Claude and
-OpenAI agent runtimes and includes shared helper scripts for OOXML workflows.
+document formats and publishing toolchains. The repo is designed to ship cleanly
+for both Claude and OpenAI agent runtimes and includes shared helper scripts for
+OOXML workflows plus wrappers for text-first publishing tools.
 
 ## Included Skills
 
@@ -13,6 +14,11 @@ OpenAI agent runtimes and includes shared helper scripts for OOXML workflows.
 | [pdf-custom](pdf-custom/SKILL.md) | `.pdf` | Merge, split, extract, OCR, form filling, and PDF generation |
 | [pptx-custom](pptx-custom/SKILL.md) | `.pptx` | Build or edit presentations with visual QA |
 | [xlsx-custom](xlsx-custom/SKILL.md) | `.xlsx`, `.csv`, `.tsv` | Create spreadsheet models, formulas, and formatted outputs |
+| [pandoc](pandoc/SKILL.md) | `.md`, `.html`, `.docx`, `.epub`, `.pdf` | Convert and publish documents across formats with Pandoc |
+| [latex](latex/SKILL.md) | `.tex`, `.bib`, `.pdf` | Author, build, and debug LaTeX documents and toolchains |
+| [typst](typst/SKILL.md) | `.typ`, `.pdf`, `.png`, `.svg` | Write and export Typst documents with native layout control |
+| [markdown](markdown/SKILL.md) | `.md`, docs text | Author and render CommonMark and GFM documents |
+| [asciidoc](asciidoc/SKILL.md) | `.adoc`, `.asciidoc`, `.pdf`, `.html` | Publish AsciiDoc with Asciidoctor backends |
 
 ## Cross-Agent Packaging
 
@@ -37,6 +43,11 @@ cat docx-custom/SKILL.md
 cat pdf-custom/SKILL.md
 cat pptx-custom/SKILL.md
 cat xlsx-custom/SKILL.md
+cat pandoc/SKILL.md
+cat latex/SKILL.md
+cat typst/SKILL.md
+cat markdown/SKILL.md
+cat asciidoc/SKILL.md
 ```
 
 ## Companion Guides
@@ -47,6 +58,11 @@ These reference files are bundled and linked from the skills:
 - [pdf-custom/REFERENCE.md](pdf-custom/REFERENCE.md) for advanced PDF patterns
 - [pptx-custom/editing.md](pptx-custom/editing.md) for unpack/edit/repack flows
 - [pptx-custom/pptxgenjs.md](pptx-custom/pptxgenjs.md) for generated decks
+- [pandoc/references/format-matrix.md](pandoc/references/format-matrix.md) for conversion targeting
+- [latex/references/engines-and-toolchain.md](latex/references/engines-and-toolchain.md) for build orchestration
+- [typst/references/export-and-cli.md](typst/references/export-and-cli.md) for CLI export patterns
+- [markdown/references/commonmark-vs-gfm.md](markdown/references/commonmark-vs-gfm.md) for dialect boundaries
+- [asciidoc/references/backends-and-pdf.md](asciidoc/references/backends-and-pdf.md) for backend selection
 
 ## Core Validation Rules
 
@@ -56,6 +72,8 @@ These reference files are bundled and linked from the skills:
   `python office-custom/scripts/validate.py document.docx`
 - QA presentations visually after any meaningful change:
   `python pptx-custom/scripts/thumbnail.py presentation.pptx`
+- Keep text-first publishing wrappers testable without their external binaries:
+  validate command builders and missing-tool messages with stdlib-only unit tests
 
 ## Build, Test, and Verify
 
@@ -79,28 +97,15 @@ llm-doc-skills/
 ├── Makefile
 ├── built/
 ├── office-custom/
-│   ├── SKILL.md
-│   ├── agents/
-│   └── scripts/
 ├── docx-custom/
-│   ├── SKILL.md
-│   ├── agents/
-│   └── scripts/
 ├── pdf-custom/
-│   ├── SKILL.md
-│   ├── FORMS.md
-│   ├── REFERENCE.md
-│   └── agents/
 ├── pptx-custom/
-│   ├── SKILL.md
-│   ├── editing.md
-│   ├── pptxgenjs.md
-│   ├── agents/
-│   └── scripts/
-└── xlsx-custom/
-    ├── SKILL.md
-    ├── agents/
-    └── scripts/
+├── xlsx-custom/
+├── pandoc/
+├── latex/
+├── typst/
+├── markdown/
+└── asciidoc/
 ```
 
 ## Related Repo Docs
