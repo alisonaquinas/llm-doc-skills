@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.4] - 2026-03-13
+
+### Fixed
+
+- `.github/workflows/release.yml`: move marketplace token handling into job env and gate the dispatch step on `env.MARKETPLACE_DISPATCH_TOKEN` so the workflow validates and skips cleanly when the secret is absent.
+
 ## [0.0.3] - 2026-03-13
 
 ### Fixed
