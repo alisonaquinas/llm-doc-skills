@@ -39,8 +39,8 @@ jobs:
             exit 1
           fi
 
-      - name: Run unit tests
-        run: python -m unittest discover -s tests -v
+      - name: Run repo test gate
+        run: make test
 
       - name: Build skill ZIPs
         run: make all
