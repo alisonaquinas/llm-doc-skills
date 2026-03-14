@@ -3,7 +3,7 @@
 .SECONDEXPANSION:
 
 # Variables
-PYTHON ?= python
+PYTHON ?= python3
 SKILLS := $(sort $(patsubst %/SKILL.md,%,$(wildcard */SKILL.md)))
 BUILD_DIR := built
 ZIP_FILES := $(addprefix $(BUILD_DIR)/,$(addsuffix -skill.zip,$(SKILLS)))
@@ -51,13 +51,7 @@ build: $(ZIP_FILES)
 
 # Clean build artifacts
 clean:
-	@if [ -d "$(BUILD_DIR)" ]; then \
-		echo "Removing $(BUILD_DIR)/ folder..."; \
-		rm -rf "$(BUILD_DIR)"; \
-		echo "  ✓ Cleanup complete"; \
-	else \
-		echo "Nothing to clean ($(BUILD_DIR)/ not found)"; \
-	fi
+	@if [ -d "$(BUILD_DIR)" ]; then 		echo "Removing $(BUILD_DIR)/ folder..."; 		rm -rf "$(BUILD_DIR)"; 		echo "  ✓ Cleanup complete"; 	else 		echo "Nothing to clean ($(BUILD_DIR)/ not found)"; 	fi
 
 # Full rebuild
 all: clean build
@@ -67,19 +61,7 @@ all: clean build
 
 # Verify build
 verify:
-	@if [ ! -d "$(BUILD_DIR)" ]; then \
-		echo "Error: $(BUILD_DIR)/ does not exist. Run 'make build' first."; \
-		exit 1; \
-	fi
-	@echo "Verifying ZIP files..."
-	@for zip in $(ZIP_FILES); do \
-		if [ -f "$$zip" ]; then \
-			echo "  ✓ $$zip"; \
-			unzip -t "$$zip" > /dev/null 2>&1 && echo "    └─ Valid ZIP"; \
-		else \
-			echo "  ✗ $$zip (missing)"; \
-		fi; \
-	done
+	@$(PYTHON) scripts/verify_built_zips.py --build-dir $(BUILD_DIR)
 
 # ---------------------------------------------------------------------------
 # Linting
@@ -87,15 +69,13 @@ verify:
 
 # Lint all content: Markdown, Python, YAML, and skill structure (L01–L12, V01–V08 pre-flight)
 lint:
+	@$(PYTHON) scripts/check_node_version.py || exit 1
 	@echo "==> Markdown (markdownlint-cli2)..."
 	@markdownlint-cli2 "**/*.md" || exit 1
 	@echo "==> YAML (yamllint)..."
-	@find . -name "*.yaml" -o -name "*.yml" \
-		| grep -v "^./.git/" | grep -v "^./built/" | grep -v "^./node_modules/" \
-		| xargs yamllint -c .yamllint.yml || exit 1
+	@find . -name "*.yaml" -o -name "*.yml" 		| grep -v "^./.git/" | grep -v "^./built/" | grep -v "^./node_modules/" 		| xargs yamllint -c .yamllint.yml || exit 1
 	@echo "==> Python (ruff)..."
-	@ruff check --select E,F,W,I --ignore E501 \
-		$$(find . -name "*.py" -not -path "./built/*" -not -path "./.git/*") || exit 1
+	@ruff check --select E,F,W,I --ignore E501 		$$(find . -name "*.py" -not -path "./built/*" -not -path "./.git/*") || exit 1
 	@echo "==> Skill structure (L01–L11)..."
 	@$(PYTHON) scripts/lint_skills.py || exit 1
 	@echo "==> Skill quality pre-flight (V01–V08)..."
@@ -123,9 +103,4 @@ test: lint test-unit
 
 # List built artifacts
 list:
-	@if [ -d "$(BUILD_DIR)" ]; then \
-		echo "Built skill ZIPs:"; \
-		ls -lh $(BUILD_DIR)/*.zip 2>/dev/null || echo "  (no ZIPs found)"; \
-	else \
-		echo "$(BUILD_DIR)/ folder not found. Run 'make build' first."; \
-	fi
+	@if [ -d "$(BUILD_DIR)" ]; then 		echo "Built skill ZIPs:"; 		ls -lh $(BUILD_DIR)/*.zip 2>/dev/null || echo "  (no ZIPs found)"; 	else 		echo "$(BUILD_DIR)/ folder not found. Run 'make build' first."; 	fi

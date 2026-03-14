@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Repo-owned wrapper CLIs for common conversion, build, render, and export flows under the text-first and diagram skill `scripts/` directories.
 - Companion `references/` docs for the new skills so authoritative guidance stays deep without pushing `SKILL.md` over repo lint thresholds.
 - Packaging and wrapper tests covering the new skills and their command-builder surfaces.
+- `scripts/verify_built_zips.py` and `scripts/check_node_version.py` to make repo verification and lint prerequisites more explicit across environments.
+
+### Fixed
+
+- `Makefile`: route ZIP verification through a Python helper so `make verify` checks all built archives consistently on Windows-backed WSL paths.
+- `Makefile`: fail early with a clear message when the active Node.js runtime is older than the version required by `markdownlint-cli2`.
 
 ## [0.0.5] - 2026-03-13
 
