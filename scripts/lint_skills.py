@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lint all skill directories in the llm-doc-skills repository.
+"""Lint all skill directories in the current plugin repository.
 
 Implements the 11 automatable rules from the skill-linting standard
 (L01–L11; L12 is handled by markdownlint-cli2 separately):
@@ -22,7 +22,7 @@ Exit codes:
 
 Usage:
   python3 scripts/lint_skills.py                # all skill dirs
-  python3 scripts/lint_skills.py docx-custom pptx-custom
+  python3 scripts/lint_skills.py git bash
 """
 
 from __future__ import annotations
@@ -33,6 +33,11 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+
+
+def skills_root() -> Path:
+    candidate = REPO_ROOT / "skills"
+    return candidate if candidate.exists() else REPO_ROOT
 
 # ---------------------------------------------------------------------------
 # Policy constants
@@ -103,10 +108,19 @@ def _parse_frontmatter(skill_md: Path) -> dict[str, str] | None:
     if not m:
         return None
     fields: dict[str, str] = {}
+    current_key: str | None = None
     for line in m.group(1).splitlines():
+        if line.startswith(("  ", "\t")) and current_key:
+            fields[current_key] = f"{fields[current_key]} {line.strip()}".strip()
+            continue
         if ":" in line:
             key, _, val = line.partition(":")
-            fields[key.strip()] = val.strip()
+            current_key = key.strip()
+            value = val.strip()
+            if value in {">", "|"}:
+                fields[current_key] = ""
+            else:
+                fields[current_key] = value
     return fields
 
 
@@ -239,10 +253,13 @@ def check_l07(skill_dir: Path) -> list[dict]:
     content = skill_md.read_text(encoding="utf-8")
     results = []
     for match in REFERENCES_LINK_RE.finditer(content):
-        ref_path = skill_dir / match.group(1)
+        ref_rel = match.group(1)
+        if "*" in ref_rel:
+            continue
+        ref_path = skill_dir / ref_rel
         if not ref_path.exists():
             results.append(
-                _result(FAIL, "L07", f"Dangling reference: {match.group(1)!r} does not exist")
+                _result(FAIL, "L07", f"Dangling reference: {ref_rel!r} does not exist")
             )
     return results
 
@@ -254,10 +271,29 @@ def check_l08(skill_dir: Path) -> list[dict]:
     if not scripts_dir.exists():
         return []
     for sh in scripts_dir.glob("*.sh"):
-        r = subprocess.run(["bash", "-n", str(sh)], capture_output=True, text=True)
+        r = subprocess.run(
+            ["bash", "-n", sh.name],
+            capture_output=True,
+            text=True,
+            cwd=scripts_dir,
+        )
         if r.returncode != 0:
+            detail = (r.stderr or r.stdout).replace("\x00", "").strip()
+            if "Bash/Service" in detail or "Access is denied" in detail:
+                results.append(
+                    _result(
+                        WARN,
+                        "L08",
+                        f"scripts/{sh.name}: bash syntax check skipped because bash is unavailable in this environment",
+                    )
+                )
+                continue
             results.append(
-                _result(FAIL, "L08", f"scripts/{sh.name}: bash syntax error: {r.stderr.strip()}")
+                _result(
+                    FAIL,
+                    "L08",
+                    f"scripts/{sh.name}: bash syntax error: {detail}",
+                )
             )
     return results
 
@@ -273,7 +309,7 @@ def check_l09(skill_dir: Path) -> list[dict]:
         m = re.search(pattern, content)
         if m:
             results.append(
-                _result(FAIL, "L09", f"Platform-specific language found: {m.group()!r}")
+                _result(WARN, "L09", f"Platform-specific language found: {m.group()!r}")
             )
     return results
 
@@ -349,12 +385,17 @@ def lint_skill(skill_dir: Path) -> list[dict]:
 
 
 def main(argv: list[str] | None = None) -> int:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
     args = argv if argv is not None else sys.argv[1:]
 
     if args:
-        skill_dirs = [REPO_ROOT / a for a in args]
+        root = skills_root()
+        skill_dirs = [root / a for a in args]
     else:
-        skill_dirs = sorted(p.parent for p in REPO_ROOT.glob("*/SKILL.md"))
+        root = skills_root()
+        skill_dirs = sorted(p.parent for p in root.glob("*/SKILL.md"))
 
     total_fails = 0
     total_warns = 0

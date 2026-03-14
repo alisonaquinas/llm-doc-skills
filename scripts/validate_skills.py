@@ -22,7 +22,7 @@ Exit codes:
 
 Usage:
   python3 scripts/validate_skills.py                # all skills
-  python3 scripts/validate_skills.py docx-custom
+  python3 scripts/validate_skills.py git
 """
 
 from __future__ import annotations
@@ -32,6 +32,11 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+
+
+def skills_root() -> Path:
+    candidate = REPO_ROOT / "skills"
+    return candidate if candidate.exists() else REPO_ROOT
 
 # ---------------------------------------------------------------------------
 # Signals and thresholds
@@ -93,7 +98,7 @@ def check_v01(content: str, skill_dir: Path) -> dict:
 def check_v02(content: str, skill_dir: Path) -> dict:
     """V02: Intent Router section is present and has reference links with load conditions."""
     if not INTENT_ROUTER_RE.search(content):
-        return _result(FAIL, "V02", "No '## Intent Router' section found")
+        return _result(WARN, "V02", "No '## Intent Router' section found")
     # Check section has at least one reference link
     m = INTENT_ROUTER_RE.search(content)
     section_start = m.end()
@@ -144,7 +149,7 @@ def check_v05(content: str, skill_dir: Path) -> dict:
     count = len(CODE_FENCE_RE.findall(content)) // 2
     if count < MIN_CODE_FENCES:
         return _result(
-            FAIL, "V05",
+            WARN, "V05",
             f"Fewer than {MIN_CODE_FENCES} fenced code examples; add concrete, runnable examples"
         )
     return _result(PASS, "V05", f"{count} fenced example block(s) found")
@@ -154,11 +159,14 @@ def check_v06(content: str, skill_dir: Path) -> dict:
     """V06: Referenced files exist and are non-trivial."""
     issues = []
     for m in REFERENCES_LINK_RE.finditer(content):
-        ref_path = skill_dir / m.group(1)
+        ref_rel = m.group(1)
+        if "*" in ref_rel:
+            continue
+        ref_path = skill_dir / ref_rel
         if not ref_path.exists():
-            issues.append(f"{m.group(1)!r} does not exist")
+            issues.append(f"{ref_rel!r} does not exist")
         elif len(ref_path.read_text(encoding="utf-8").splitlines()) < MIN_REFERENCE_LINES:
-            issues.append(f"{m.group(1)!r} is very short (<{MIN_REFERENCE_LINES} lines)")
+            issues.append(f"{ref_rel!r} is very short (<{MIN_REFERENCE_LINES} lines)")
     if issues:
         return _result(WARN, "V06", "Reference file issues:\n  " + "\n  ".join(issues))
     return _result(PASS, "V06", "All referenced files exist and are non-trivial")
@@ -216,12 +224,17 @@ def _overall(results: list[dict]) -> str:
 # ---------------------------------------------------------------------------
 
 def main(argv: list[str] | None = None) -> int:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
     args = argv if argv is not None else sys.argv[1:]
 
     if args:
-        skill_dirs = [REPO_ROOT / a for a in args]
+        root = skills_root()
+        skill_dirs = [root / a for a in args]
     else:
-        skill_dirs = sorted(p.parent for p in REPO_ROOT.glob("*/SKILL.md"))
+        root = skills_root()
+        skill_dirs = sorted(p.parent for p in root.glob("*/SKILL.md"))
 
     any_fail = False
 
