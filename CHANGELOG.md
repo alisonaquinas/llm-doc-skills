@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `Makefile`: route ZIP verification through a Python helper so `make verify` checks all built archives consistently on Windows-backed WSL paths.
 - `Makefile`: fail early with a clear message when the active Node.js runtime is older than the version required by `markdownlint-cli2`.
+- `.gitignore`: ignore repo-local scratch directories and transient `tmp*/` artifacts so failed local temp cleanup does not pollute git status.
 
 ## [0.0.5] - 2026-03-13
 

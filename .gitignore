@@ -31,6 +31,10 @@ yarn.lock
 # Build outputs
 built/
 
+# Local scratch and transient temp artifacts
+.tmp-test-artifacts/
+tmp*/
+
 # Office temp files
 ~$*.docx
 ~$*.xlsx
