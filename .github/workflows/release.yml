@@ -24,6 +24,18 @@ jobs:
         with:
           python-version: "3.x"
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install release prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make zip unzip jq
+          python -m pip install --upgrade pip
+          python -m pip install ruff yamllint
+          npm install -g markdownlint-cli2
+
       - name: Read plugin version
         id: plugin
         run: |

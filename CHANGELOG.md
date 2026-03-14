@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-03-14
+
+### Fixed
+
+- added release-time Node and lint/tool provisioning to `.github/workflows/release.yml` so tag releases run the same `make test` gate successfully on GitHub-hosted runners
+- restored trailing newlines in the newly added skill agent manifests and wrapper scripts, and removed the unused import from `scripts/verify_built_zips.py`, so the CI YAML and Python lint jobs pass for the text-first publishing and diagram skills
+
 ## [0.1.0] - 2026-03-14
 
 ### Changed
