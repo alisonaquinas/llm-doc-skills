@@ -1,6 +1,6 @@
 {
   "name": "llm-doc-skills",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "Cross-compatible LLM skills for document workflows, text-first publishing, host-specific Markdown, and diagram authoring: OOXML, PDF, Pandoc, LaTeX, Typst, Markdown, AsciiDoc, Mermaid, PlantUML, and Graphviz.",
   "author": {
     "name": "Alison Aquinas"

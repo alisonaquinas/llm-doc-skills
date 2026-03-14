@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-03-14
+
 ### Changed
 
 - generalized the repo-owned skill lint and validation helpers so they can share the same baseline logic as the other plugin repos while still supporting `llm-doc-skills` top-level skill layout
