@@ -294,3 +294,11 @@ to prevent encoding corruption:
 | Python stdlib | (built-in) | `unpack.py`, `pack.py`, `validate.py` |
 
 No third-party Python packages are required for the office utilities themselves.
+
+---
+
+## See Also
+
+- **`$raw-document`** — specification-level reference for when the unpack/repack/validate
+  cycle surfaces XML errors that require looking up OOXML or ODF schemas, namespace
+  definitions, or element-level specification details.

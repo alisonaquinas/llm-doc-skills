@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  OpenDocument-v1.3-dsig-schema.rng
+  RELAX NG Schema for OpenDocument 1.3 Digital Signatures
+  File location in package: META-INF/documentsignatures.xml
+                             META-INF/macrosignatures.xml
+                             META-INF/packagelockingsignatures.xml
+
+  Authoritative source: OASIS OpenDocument Technical Committee
+  Specification: ODF 1.3 Part 2 – Packages, Section 6
+  Official download: https://docs.oasis-open.org/office/OpenDocument/v1.3/os/schemas/
+  ISO/IEC equivalent: ISO/IEC 26300-2:2021
+
+  Copyright (C) OASIS Open 2002-2021. All Rights Reserved.
+  This representation is derived from the published specification for
+  reference purposes. For authoritative normative content use the
+  official OASIS publication above.
+
+  ODF digital signatures are based on XML Signature (xmldsig-core) with
+  XAdES extensions (ETSI EN 319 132). The dsig namespace adds wrapper
+  elements; the core signature elements are in the
+  http://www.w3.org/2000/09/xmldsig# namespace.
+-->
+<grammar
+  xmlns="http://relaxng.org/ns/structure/1.0"
+  xmlns:dsig="urn:oasis:names:tc:opendocument:xmlns:digitalsignature:1.0"
+  xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+  datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+
+  <start>
+    <ref name="document-signatures"/>
+  </start>
+
+  <!-- ============================================================
+       Root: document-signatures
+       ============================================================ -->
+  <define name="document-signatures">
+    <element name="dsig:document-signatures">
+      <ref name="document-signatures-attlist"/>
+      <zeroOrMore>
+        <ref name="Signature"/>
+      </zeroOrMore>
+    </element>
+  </define>
+
+  <define name="document-signatures-attlist">
+    <optional>
+      <attribute name="dsig:version">
+        <!-- ODF version string, e.g. "1.3" -->
+        <ref name="string"/>
+      </attribute>
+    </optional>
+  </define>
+
+  <!-- ============================================================
+       XML Signature (ds:Signature) — W3C xmldsig-core
+       All content below is the W3C XML Signature structure;
+       the ODF dsig schema imports these definitions from:
+       http://www.w3.org/TR/xmldsig-core/xmldsig-core-schema.xsd
+       ============================================================ -->
+  <define name="Signature">
+    <element name="ds:Signature">
+      <optional>
+        <attribute name="Id">
+          <data type="ID"/>
+        </attribute>
+      </optional>
+      <ref name="SignedInfo"/>
+      <ref name="SignatureValue"/>
+      <optional>
+        <ref name="KeyInfo"/>
+      </optional>
+      <zeroOrMore>
+        <ref name="Object"/>
+      </zeroOrMore>
+    </element>
+  </define>
+
+  <!-- SignedInfo -->
+  <define name="SignedInfo">
+    <element name="ds:SignedInfo">
+      <optional>
+        <attribute name="Id">
+          <data type="ID"/>
+        </attribute>
+      </optional>
+      <ref name="CanonicalizationMethod"/>
+      <ref name="SignatureMethod"/>
+      <oneOrMore>
+        <ref name="Reference"/>
+      </oneOrMore>
+    </element>
+  </define>
+
+  <define name="CanonicalizationMethod">
+    <element name="ds:CanonicalizationMethod">
+      <attribute name="Algorithm">
+        <!-- e.g. "http://www.w3.org/TR/2001/REC-xml-c14n-20010315"
+                  "http://www.w3.org/2001/10/xml-exc-c14n#" -->
+        <data type="anyURI"/>
+      </attribute>
+      <zeroOrMore>
+        <choice>
+          <text/>
+          <ref name="anyElement"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+
+  <define name="SignatureMethod">
+    <element name="ds:SignatureMethod">
+      <attribute name="Algorithm">
+        <!-- e.g. "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
+                  "http://www.w3.org/2007/05/xmldsig-more#ecdsa-sha256" -->
+        <data type="anyURI"/>
+      </attribute>
+      <optional>
+        <element name="ds:HMACOutputLength">
+          <data type="integer"/>
+        </element>
+      </optional>
+      <zeroOrMore>
+        <choice>
+          <text/>
+          <ref name="anyElement"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+
+  <!-- Reference -->
+  <define name="Reference">
+    <element name="ds:Reference">
+      <optional>
+        <attribute name="Id">
+          <data type="ID"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="URI">
+          <data type="anyURI"/>
+        </attribute>
+      </optional>
+      <optional>
+        <attribute name="Type">
+          <data type="anyURI"/>
+        </attribute>
+      </optional>
+      <optional>
+        <ref name="Transforms"/>
+      </optional>
+      <ref name="DigestMethod"/>
+      <ref name="DigestValue"/>
+    </element>
+  </define>
+
+  <define name="Transforms">
+    <element name="ds:Transforms">
+      <oneOrMore>
+        <ref name="Transform"/>
+      </oneOrMore>
+    </element>
+  </define>
+
+  <define name="Transform">
+    <element name="ds:Transform">
+      <attribute name="Algorithm">
+        <data type="anyURI"/>
+      </attribute>
+      <zeroOrMore>
+        <choice>
+          <text/>
+          <element name="ds:XPath">
+            <text/>
+          </element>
+          <ref name="anyElement"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+
+  <define name="DigestMethod">
+    <element name="ds:DigestMethod">
+      <attribute name="Algorithm">
+        <!-- e.g. "http://www.w3.org/2001/04/xmlenc#sha256"
+                  "http://www.w3.org/2000/09/xmldsig#sha1" -->
+        <data type="anyURI"/>
+      </attribute>
+      <zeroOrMore>
+        <choice>
+          <text/>
+          <ref name="anyElement"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+
+  <define name="DigestValue">
+    <element name="ds:DigestValue">
+      <!-- Base64-encoded digest -->
+      <data type="base64Binary"/>
+    </element>
+  </define>
+
+  <!-- SignatureValue -->
+  <define name="SignatureValue">
+    <element name="ds:SignatureValue">
+      <optional>
+        <attribute name="Id">
+          <data type="ID"/>
+        </attribute>
+      </optional>
+      <data type="base64Binary"/>
+    </element>
+  </define>
+
+  <!-- KeyInfo -->
+  <define name="KeyInfo">
+    <element name="ds:KeyInfo">
+      <optional>
+        <attribute name="Id">
+          <data type="ID"/>
+        </attribute>
+      </optional>
+      <oneOrMore>
+        <choice>
+          <text/>
+          <ref name="KeyName"/>
+          <ref name="KeyValue"/>
+          <ref name="RetrievalMethod"/>
+          <ref name="X509Data"/>
+          <ref name="PGPData"/>
+          <ref name="SPKIData"/>
+          <ref name="MgmtData"/>
+          <ref name="anyElement"/>
+        </choice>
+      </oneOrMore>
+    </element>
+  </define>
+
+  <define name="KeyName">
+    <element name="ds:KeyName">
+      <text/>
+    </element>
+  </define>
+
+  <define name="KeyValue">
+    <element name="ds:KeyValue">
+      <choice>
+        <ref name="DSAKeyValue"/>
+        <ref name="RSAKeyValue"/>
+        <ref name="anyElement"/>
+      </choice>
+    </element>
+  </define>
+
+  <define name="DSAKeyValue">
+    <element name="ds:DSAKeyValue">
+      <optional>
+        <element name="ds:P"><data type="base64Binary"/></element>
+        <element name="ds:Q"><data type="base64Binary"/></element>
+      </optional>
+      <optional>
+        <element name="ds:G"><data type="base64Binary"/></element>
+      </optional>
+      <element name="ds:Y"><data type="base64Binary"/></element>
+      <optional>
+        <element name="ds:J"><data type="base64Binary"/></element>
+      </optional>
+      <optional>
+        <element name="ds:Seed"><data type="base64Binary"/></element>
+        <element name="ds:PgenCounter"><data type="base64Binary"/></element>
+      </optional>
+    </element>
+  </define>
+
+  <define name="RSAKeyValue">
+    <element name="ds:RSAKeyValue">
+      <element name="ds:Modulus"><data type="base64Binary"/></element>
+      <element name="ds:Exponent"><data type="base64Binary"/></element>
+    </element>
+  </define>
+
+  <define name="RetrievalMethod">
+    <element name="ds:RetrievalMethod">
+      <optional>
+        <attribute name="URI"><data type="anyURI"/></attribute>
+      </optional>
+      <optional>
+        <attribute name="Type"><data type="anyURI"/></attribute>
+      </optional>
+      <optional>
+        <ref name="Transforms"/>
+      </optional>
+    </element>
+  </define>
+
+  <define name="X509Data">
+    <element name="ds:X509Data">
+      <oneOrMore>
+        <choice>
+          <element name="ds:X509IssuerSerial">
+            <element name="ds:X509IssuerName"><text/></element>
+            <element name="ds:X509SerialNumber"><data type="integer"/></element>
+          </element>
+          <element name="ds:X509SKI"><data type="base64Binary"/></element>
+          <element name="ds:X509SubjectName"><text/></element>
+          <element name="ds:X509Certificate"><data type="base64Binary"/></element>
+          <element name="ds:X509CRL"><data type="base64Binary"/></element>
+          <ref name="anyElement"/>
+        </choice>
+      </oneOrMore>
+    </element>
+  </define>
+
+  <define name="PGPData">
+    <element name="ds:PGPData">
+      <choice>
+        <group>
+          <element name="ds:PGPKeyID"><data type="base64Binary"/></element>
+          <optional>
+            <element name="ds:PGPKeyPacket"><data type="base64Binary"/></element>
+          </optional>
+          <zeroOrMore><ref name="anyElement"/></zeroOrMore>
+        </group>
+        <group>
+          <element name="ds:PGPKeyPacket"><data type="base64Binary"/></element>
+          <zeroOrMore><ref name="anyElement"/></zeroOrMore>
+        </group>
+      </choice>
+    </element>
+  </define>
+
+  <define name="SPKIData">
+    <element name="ds:SPKIData">
+      <oneOrMore>
+        <element name="ds:SPKISexp"><data type="base64Binary"/></element>
+        <zeroOrMore><ref name="anyElement"/></zeroOrMore>
+      </oneOrMore>
+    </element>
+  </define>
+
+  <define name="MgmtData">
+    <element name="ds:MgmtData"><text/></element>
+  </define>
+
+  <!-- Object (XAdES QualifyingProperties live here) -->
+  <define name="Object">
+    <element name="ds:Object">
+      <optional>
+        <attribute name="Id"><data type="ID"/></attribute>
+      </optional>
+      <optional>
+        <attribute name="MimeType"><text/></attribute>
+      </optional>
+      <optional>
+        <attribute name="Encoding"><data type="anyURI"/></attribute>
+      </optional>
+      <zeroOrMore>
+        <choice>
+          <text/>
+          <ref name="anyElement"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+
+  <!-- ============================================================
+       Wildcard for extension elements (XAdES, etc.)
+       ============================================================ -->
+  <define name="anyElement">
+    <element>
+      <anyName/>
+      <zeroOrMore>
+        <choice>
+          <attribute><anyName/></attribute>
+          <text/>
+          <ref name="anyElement"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+
+  <!-- ============================================================
+       Primitive Types
+       ============================================================ -->
+  <define name="string">
+    <data type="string"/>
+  </define>
+
+</grammar>

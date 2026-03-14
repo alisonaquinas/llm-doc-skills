@@ -661,3 +661,12 @@ df["col"] = df["col"].astype(str)
 | `VLOOKUP` | `df.merge(ref, on="key", how="left")` |
 | `COUNTIF(A:A, "x")` | `(df["A"] == "x").sum()` |
 | `SUMIF` | `df[df["A"]>0]["B"].sum()` |
+
+---
+
+## See Also
+
+- **`$raw-document`** — specification-level reference (OOXML/ODF schemas, namespace tables,
+  package structure deep-dives, cross-format mapping). Use when this skill's content is
+  insufficient or when schema validation, format recovery, or deep SpreadsheetML element
+  research is required.

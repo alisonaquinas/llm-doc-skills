@@ -858,3 +858,12 @@ new ImageRun({
 | 8.5" (US Letter width) | 12,240 | — | |
 | 11" (US Letter height) | 15,840 | — | |
 | 1" margin both sides | content = 9,360 DXA | — | |
+
+---
+
+## See Also
+
+- **`$raw-document`** — specification-level reference (OOXML/ODF schemas, namespace tables,
+  package structure deep-dives, cross-format mapping). Use when XML Reference above is
+  insufficient or when schema validation, format recovery, or interoperability research
+  is required.

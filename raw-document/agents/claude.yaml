@@ -1,0 +1,4 @@
+interface:
+  display_name: "Raw Document Structure"
+  short_description: "Raw OOXML/ODF structure, schema validation, format research"
+  default_prompt: "Use $raw-document only when $docx-custom, $pptx-custom, $xlsx-custom, and $office-custom cannot handle the task. Use for schema-level validation, format recovery, specification research, or cross-format interoperability work on OOXML and ODF documents."

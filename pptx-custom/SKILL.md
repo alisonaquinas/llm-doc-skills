@@ -513,3 +513,12 @@ run.font.color.rgb = RGBColor(0xFF, 0x00, 0x00)
 | 1 pt | 12,700 | `Pt(1)` |
 | Slide 16:9 width | 9,144,000 | `Inches(10)` |
 | Slide 16:9 height | 6,858,000 | `Inches(7.5)` |
+
+---
+
+## See Also
+
+- **`$raw-document`** — specification-level reference (OOXML/ODF schemas, namespace tables,
+  package structure deep-dives, cross-format mapping). Use when this skill's content is
+  insufficient or when schema validation, format recovery, or deep PresentationML element
+  research is required.

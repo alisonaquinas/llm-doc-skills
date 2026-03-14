@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  OpenDocument-v1.3-manifest-schema.rng
+  RELAX NG Schema for OpenDocument 1.3 Package Manifest (META-INF/manifest.xml)
+
+  Authoritative source: OASIS OpenDocument Technical Committee
+  Specification: ODF 1.3 Part 2 – Packages, Annex B
+  Official download: https://docs.oasis-open.org/office/OpenDocument/v1.3/os/schemas/
+  ISO/IEC equivalent: ISO/IEC 26300-2:2021
+
+  Copyright (C) OASIS Open 2002-2021. All Rights Reserved.
+  This representation is derived from the published specification for
+  reference purposes. For authoritative normative content use the
+  official OASIS publication above.
+-->
+<grammar
+  xmlns="http://relaxng.org/ns/structure/1.0"
+  xmlns:manifest="urn:oasis:names:tc:opendocument:xmlns:manifest:1.0"
+  datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+
+  <!-- ============================================================
+       Root Element
+       ============================================================ -->
+  <start>
+    <ref name="manifest"/>
+  </start>
+
+  <define name="manifest">
+    <element name="manifest:manifest">
+      <ref name="manifest-attlist"/>
+      <zeroOrMore>
+        <ref name="file-entry"/>
+      </zeroOrMore>
+    </element>
+  </define>
+
+  <define name="manifest-attlist">
+    <optional>
+      <attribute name="manifest:version">
+        <ref name="string"/>
+      </attribute>
+    </optional>
+  </define>
+
+  <!-- ============================================================
+       File Entry
+       ============================================================ -->
+  <define name="file-entry">
+    <element name="manifest:file-entry">
+      <ref name="file-entry-attlist"/>
+      <optional>
+        <ref name="encryption-data"/>
+      </optional>
+    </element>
+  </define>
+
+  <define name="file-entry-attlist">
+    <attribute name="manifest:full-path">
+      <ref name="string"/>
+    </attribute>
+    <optional>
+      <attribute name="manifest:size">
+        <data type="nonNegativeInteger"/>
+      </attribute>
+    </optional>
+    <attribute name="manifest:media-type">
+      <ref name="string"/>
+    </attribute>
+    <optional>
+      <attribute name="manifest:preferred-view-magnification">
+        <data type="integer"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="manifest:version">
+        <ref name="string"/>
+      </attribute>
+    </optional>
+  </define>
+
+  <!-- ============================================================
+       Encryption Data (ODF 1.2+)
+       ============================================================ -->
+  <define name="encryption-data">
+    <element name="manifest:encryption-data">
+      <ref name="encryption-data-attlist"/>
+      <ref name="algorithm"/>
+      <optional>
+        <ref name="start-key-generation"/>
+      </optional>
+      <ref name="key-derivation"/>
+    </element>
+  </define>
+
+  <define name="encryption-data-attlist">
+    <attribute name="manifest:checksum-type">
+      <!-- ODF 1.2: "SHA1/1K"; ODF 1.3: full URI forms -->
+      <ref name="string"/>
+    </attribute>
+    <attribute name="manifest:checksum">
+      <!-- Base64-encoded checksum of decrypted data -->
+      <ref name="string"/>
+    </attribute>
+  </define>
+
+  <!-- ============================================================
+       Algorithm (symmetric cipher used for content encryption)
+       ============================================================ -->
+  <define name="algorithm">
+    <element name="manifest:algorithm">
+      <ref name="algorithm-attlist"/>
+      <optional>
+        <ref name="initialisation-vector"/>
+      </optional>
+    </element>
+  </define>
+
+  <define name="algorithm-attlist">
+    <attribute name="manifest:algorithm-name">
+      <!-- e.g. "AES256-CBC" or full URI
+           "urn:oasis:names:tc:opendocument:xmlns:manifest:1.0#blowfish-cfb"
+           "http://www.w3.org/2001/04/xmlenc#aes256-cbc" -->
+      <ref name="string"/>
+    </attribute>
+    <attribute name="manifest:initialisation-vector">
+      <!-- Base64-encoded IV; may appear here or as child element -->
+      <ref name="string"/>
+    </attribute>
+  </define>
+
+  <define name="initialisation-vector">
+    <element name="manifest:initialisation-vector">
+      <text/>
+    </element>
+  </define>
+
+  <!-- ============================================================
+       Start Key Generation (hash used to derive start key)
+       ============================================================ -->
+  <define name="start-key-generation">
+    <element name="manifest:start-key-generation">
+      <ref name="start-key-generation-attlist"/>
+    </element>
+  </define>
+
+  <define name="start-key-generation-attlist">
+    <attribute name="manifest:start-key-generation-name">
+      <!-- e.g. "SHA1" or "http://www.w3.org/2000/09/xmldsig#sha256" -->
+      <ref name="string"/>
+    </attribute>
+    <optional>
+      <attribute name="manifest:key-size">
+        <data type="nonNegativeInteger"/>
+      </attribute>
+    </optional>
+  </define>
+
+  <!-- ============================================================
+       Key Derivation (PBKDF2 parameters)
+       ============================================================ -->
+  <define name="key-derivation">
+    <element name="manifest:key-derivation">
+      <ref name="key-derivation-attlist"/>
+    </element>
+  </define>
+
+  <define name="key-derivation-attlist">
+    <attribute name="manifest:key-derivation-name">
+      <!-- e.g. "PBKDF2" or
+           "urn:oasis:names:tc:opendocument:xmlns:manifest:1.0#pbkdf2" -->
+      <ref name="string"/>
+    </attribute>
+    <optional>
+      <attribute name="manifest:key-size">
+        <data type="nonNegativeInteger"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="manifest:iteration-count">
+        <data type="nonNegativeInteger"/>
+      </attribute>
+    </optional>
+    <attribute name="manifest:salt">
+      <!-- Base64-encoded PBKDF2 salt -->
+      <ref name="string"/>
+    </attribute>
+  </define>
+
+  <!-- ============================================================
+       OpenPGP Encryption (ODF 1.3)
+       ============================================================ -->
+  <!--
+    In ODF 1.3 the manifest supports OpenPGP-based encryption via:
+      <manifest:encrypted-key>
+        <manifest:encryption-method manifest:PGPAlgorithm="..."/>
+        <manifest:keyinfo>
+          <manifest:PGPData>
+            <manifest:PGPKeyID>...</manifest:PGPKeyID>
+            <manifest:PGPKeyPacket>...</manifest:PGPKeyPacket>
+          </manifest:PGPData>
+        </manifest:keyinfo>
+        <manifest:CipherData>
+          <manifest:CipherValue>...</manifest:CipherValue>
+        </manifest:CipherData>
+      </manifest:encrypted-key>
+    These elements are defined in ODF 1.3 Part 2, Section 5.
+    Full schema coverage for OpenPGP elements is in the normative RNG.
+  -->
+
+  <!-- ============================================================
+       Primitive Types
+       ============================================================ -->
+  <define name="string">
+    <data type="string"/>
+  </define>
+
+</grammar>
