@@ -1,0 +1,6 @@
+interface:
+  display_name: "GitLab Flavored Markdown Skill"
+  short_description: "Author and render GitLab-targeted Markdown"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  default_prompt: "Use $gitlab-flavored-markdown when a task involves GitLab Flavored Markdown, docs or wiki pages, merge request or issue formatting, GitLab references, admonitions, or GitLab-oriented Markdown export workflows."

@@ -1,0 +1,6 @@
+interface:
+  display_name: "PlantUML Diagram Skill"
+  short_description: "Author and render PlantUML diagrams"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  default_prompt: "Use $plantuml when a task involves PlantUML source, UML-style diagrams, sequence or component diagrams, includes, themes, standard library usage, or PlantUML rendering and export workflows."

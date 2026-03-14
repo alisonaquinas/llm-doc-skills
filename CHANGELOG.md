@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - New packaged text-first publishing skills: `pandoc`, `latex`, `typst`, `markdown`, and `asciidoc`.
-- Repo-owned wrapper CLIs for common conversion, build, render, and export flows under the new skill `scripts/` directories.
+- New packaged platform-and-diagram skills: `github-flavored-markdown`, `gitlab-flavored-markdown`, `mermaid`, `plantuml`, and `graphviz`.
+- Repo-owned wrapper CLIs for common conversion, build, render, and export flows under the text-first and diagram skill `scripts/` directories.
 - Companion `references/` docs for the new skills so authoritative guidance stays deep without pushing `SKILL.md` over repo lint thresholds.
 - Packaging and wrapper tests covering the new skills and their command-builder surfaces.
 

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Graphviz Diagram Skill"
+  short_description: "Author and render Graphviz DOT diagrams"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  default_prompt: "Use $graphviz when a task involves Graphviz, DOT source, directed or undirected graph diagrams, layout engine selection, node or edge styling, or Graphviz rendering and export workflows."

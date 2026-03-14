@@ -20,6 +20,11 @@ manifests, assets, and helper scripts as needed.
 | `latex` | LaTeX authoring, engine selection, compile loops, and TeX toolchain troubleshooting |
 | `typst` | Typst-native authoring, layout control, and export workflows |
 | `markdown` | CommonMark and GFM authoring plus lightweight rendering and export |
+| `github-flavored-markdown` | GitHub-targeted Markdown authoring, rendering, and portability review |
+| `gitlab-flavored-markdown` | GitLab-targeted Markdown authoring, rendering, and portability review |
+| `mermaid` | Mermaid diagram authoring, embedding, and CLI export |
+| `plantuml` | PlantUML authoring, includes, themes, and UML-oriented rendering |
+| `graphviz` | DOT authoring, layout engine selection, and Graphviz export |
 | `asciidoc` | AsciiDoc authoring, attributes, includes, and Asciidoctor backends |
 
 ## Core Workflows
@@ -73,7 +78,12 @@ from plain-text sources rather than OOXML packages.
 - use [pandoc/SKILL.md](pandoc/SKILL.md) for cross-format conversion and publishing
 - use [latex/SKILL.md](latex/SKILL.md) for LaTeX authoring and build orchestration
 - use [typst/SKILL.md](typst/SKILL.md) for Typst-native layout and export
-- use [markdown/SKILL.md](markdown/SKILL.md) for CommonMark and GFM docs work
+- use [markdown/SKILL.md](markdown/SKILL.md) for CommonMark and baseline GFM docs work
+- use [github-flavored-markdown/SKILL.md](github-flavored-markdown/SKILL.md) for GitHub-specific Markdown surfaces
+- use [gitlab-flavored-markdown/SKILL.md](gitlab-flavored-markdown/SKILL.md) for GitLab-specific Markdown surfaces
+- use [mermaid/SKILL.md](mermaid/SKILL.md) for Mermaid diagrams in docs workflows
+- use [plantuml/SKILL.md](plantuml/SKILL.md) for UML-style text diagrams
+- use [graphviz/SKILL.md](graphviz/SKILL.md) for DOT and layout-engine-driven graph diagrams
 - use [asciidoc/SKILL.md](asciidoc/SKILL.md) for Asciidoctor publishing flows
 
 ## Important Implementation Notes
@@ -83,10 +93,10 @@ from plain-text sources rather than OOXML packages.
 - Presentation work should avoid text-only slides and always go through QA.
 - ReportLab PDFs should use `<sub>` and `<super>` markup instead of Unicode
   subscript and superscript characters.
-- Text-first wrapper scripts should keep command construction testable without
+- Text-first and diagram wrapper scripts should keep command construction testable without
   requiring the external binary in unit tests.
-- External publishing tools such as Pandoc, latexmk, Typst, `cmark-gfm`, and
-  Asciidoctor are optional system prerequisites rather than vendored repo dependencies.
+- External publishing tools such as Pandoc, latexmk, Typst, `cmark-gfm`, Mermaid CLI,
+  PlantUML, Java, Graphviz, and Asciidoctor are optional system prerequisites rather than vendored repo dependencies.
 
 ## Packaging and Verification
 

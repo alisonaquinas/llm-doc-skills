@@ -5,22 +5,20 @@ Repository: `llm-doc-skills`
 
 ## Summary
 
-The repository now covers both OOXML-heavy document workflows and text-first
-publishing workflows. In addition to the original Word, PowerPoint, Excel, and
-PDF skill set, the repo now includes packaged skills for Pandoc, LaTeX, Typst,
-Markdown, and AsciiDoc.
+The repository now covers OOXML-heavy document workflows, text-first publishing workflows,
+and text-first diagram and platform-specific Markdown workflows. In addition to the original
+Word, PowerPoint, Excel, and PDF skill set, the repo now includes packaged skills for Pandoc,
+LaTeX, Typst, Markdown, AsciiDoc, GitHub Flavored Markdown, GitLab Flavored Markdown, Mermaid,
+PlantUML, and Graphviz.
 
 ## Implemented Changes
 
 - retained the existing OOXML, spreadsheet, presentation, and PDF skill set
-- added packaged text-first publishing skills: `pandoc`, `latex`, `typst`,
-  `markdown`, and `asciidoc`
-- added companion `references/` docs for the new skills so deep guidance stays
-  available without pushing primary `SKILL.md` files over lint thresholds
-- added repo-owned wrapper scripts for common conversion, build, render, and
-  export flows in the new skill directories
-- added stdlib-only wrapper tests that validate command construction and
-  missing-tool failure messages without requiring external binaries
+- added packaged text-first publishing skills: `pandoc`, `latex`, `typst`, `markdown`, and `asciidoc`
+- added packaged host-specific Markdown and diagram skills: `github-flavored-markdown`, `gitlab-flavored-markdown`, `mermaid`, `plantuml`, and `graphviz`
+- added companion `references/` docs for the new skills so deep guidance stays available without pushing primary `SKILL.md` files over lint thresholds
+- added repo-owned wrapper scripts for common conversion, build, render, and export flows in the new skill directories
+- added stdlib-only wrapper tests that validate command construction and missing-tool failure messages without requiring external binaries
 - updated repo-facing docs and metadata to describe the expanded skill surface
 
 ## Current Validation Targets
@@ -28,8 +26,7 @@ Markdown, and AsciiDoc.
 - every skill package includes `SKILL.md`, `agents/claude.yaml`, and
   `agents/openai.yaml`
 - new text-first skill docs pass repo markdownlint policy
-- wrapper command builders remain testable without Pandoc, a TeX distribution,
-  Typst, `cmark-gfm`, or Asciidoctor installed
+- wrapper command builders remain testable without Pandoc, a TeX distribution, Typst, `cmark-gfm`, Mermaid CLI, PlantUML, Java, Graphviz, or Asciidoctor installed
 - rebuilt ZIP artifacts continue to use `llm-doc-skills/` as their archive root
 
 ## Markdown Notes
@@ -50,12 +47,11 @@ The repo includes a local markdownlint policy:
 
 ## Verification Results
 
-Passed for the new skill expansion:
+Expected validation for the expanded skill set:
 
-- `python scripts/lint_skills.py pandoc latex typst markdown asciidoc`
-- `python scripts/validate_skills.py pandoc latex typst markdown asciidoc`
-- `python -m unittest tests.test_document_wrappers`
-- `python -m unittest tests.test_packaging`
+- `python scripts/lint_skills.py pandoc latex typst markdown asciidoc github-flavored-markdown gitlab-flavored-markdown mermaid plantuml graphviz`
+- `python scripts/validate_skills.py pandoc latex typst markdown asciidoc github-flavored-markdown gitlab-flavored-markdown mermaid plantuml graphviz`
+- `python -m unittest tests.test_document_wrappers tests.test_packaging`
 - `python -m py_compile` across the new wrapper scripts
 - `npx markdownlint-cli2` across the new skill docs plus repo `README.md` and `CHANGELOG.md`
 

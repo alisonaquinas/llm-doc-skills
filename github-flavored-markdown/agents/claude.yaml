@@ -1,0 +1,6 @@
+interface:
+  display_name: "GitHub Flavored Markdown Skill"
+  short_description: "Author and render GitHub-targeted Markdown"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  default_prompt: "Use $github-flavored-markdown when a task involves GitHub Flavored Markdown, README structure, repository docs, issue or pull request references, alerts, task lists, or GitHub-oriented Markdown export workflows."

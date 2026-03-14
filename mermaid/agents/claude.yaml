@@ -1,0 +1,6 @@
+interface:
+  display_name: "Mermaid Diagram Skill"
+  short_description: "Author and render Mermaid diagram sources"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  default_prompt: "Use $mermaid when a task involves Mermaid diagram source, flowcharts, sequence diagrams, state or class diagrams, Markdown-embedded diagrams, Mermaid CLI rendering, or Mermaid theme and export workflows."

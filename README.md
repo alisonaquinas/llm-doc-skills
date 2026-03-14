@@ -18,6 +18,11 @@ OOXML workflows plus wrappers for text-first publishing tools.
 | [latex](latex/SKILL.md) | `.tex`, `.bib`, `.pdf` | Author, build, and debug LaTeX documents and toolchains |
 | [typst](typst/SKILL.md) | `.typ`, `.pdf`, `.png`, `.svg` | Write and export Typst documents with native layout control |
 | [markdown](markdown/SKILL.md) | `.md`, docs text | Author and render CommonMark and GFM documents |
+| [github-flavored-markdown](github-flavored-markdown/SKILL.md) | `.md`, GitHub docs | Author and render GitHub-targeted Markdown |
+| [gitlab-flavored-markdown](gitlab-flavored-markdown/SKILL.md) | `.md`, GitLab docs | Author and render GitLab-targeted Markdown |
+| [mermaid](mermaid/SKILL.md) | `.mmd`, `.svg`, `.png`, `.pdf` | Author and render Mermaid diagrams for docs |
+| [plantuml](plantuml/SKILL.md) | `.puml`, `.plantuml`, `.svg`, `.png` | Author and render UML-style PlantUML diagrams |
+| [graphviz](graphviz/SKILL.md) | `.dot`, `.svg`, `.png`, `.pdf` | Author and render Graphviz DOT diagrams |
 | [asciidoc](asciidoc/SKILL.md) | `.adoc`, `.asciidoc`, `.pdf`, `.html` | Publish AsciiDoc with Asciidoctor backends |
 
 ## Cross-Agent Packaging
@@ -47,6 +52,11 @@ cat pandoc/SKILL.md
 cat latex/SKILL.md
 cat typst/SKILL.md
 cat markdown/SKILL.md
+cat github-flavored-markdown/SKILL.md
+cat gitlab-flavored-markdown/SKILL.md
+cat mermaid/SKILL.md
+cat plantuml/SKILL.md
+cat graphviz/SKILL.md
 cat asciidoc/SKILL.md
 ```
 
@@ -62,6 +72,11 @@ These reference files are bundled and linked from the skills:
 - [latex/references/engines-and-toolchain.md](latex/references/engines-and-toolchain.md) for build orchestration
 - [typst/references/export-and-cli.md](typst/references/export-and-cli.md) for CLI export patterns
 - [markdown/references/commonmark-vs-gfm.md](markdown/references/commonmark-vs-gfm.md) for dialect boundaries
+- [github-flavored-markdown/references/gfm-syntax-matrix.md](github-flavored-markdown/references/gfm-syntax-matrix.md) for GitHub-specific syntax and portability
+- [gitlab-flavored-markdown/references/glfm-syntax-matrix.md](gitlab-flavored-markdown/references/glfm-syntax-matrix.md) for GitLab-specific syntax and portability
+- [mermaid/references/diagram-types.md](mermaid/references/diagram-types.md) for Mermaid diagram selection
+- [plantuml/references/diagram-families.md](plantuml/references/diagram-families.md) for UML-oriented diagram patterns
+- [graphviz/references/layout-engines.md](graphviz/references/layout-engines.md) for engine selection
 - [asciidoc/references/backends-and-pdf.md](asciidoc/references/backends-and-pdf.md) for backend selection
 
 ## Core Validation Rules
@@ -72,7 +87,7 @@ These reference files are bundled and linked from the skills:
   `python office-custom/scripts/validate.py document.docx`
 - QA presentations visually after any meaningful change:
   `python pptx-custom/scripts/thumbnail.py presentation.pptx`
-- Keep text-first publishing wrappers testable without their external binaries:
+- Keep text-first publishing and diagram wrappers testable without their external binaries:
   validate command builders and missing-tool messages with stdlib-only unit tests
 
 ## Build, Test, and Verify
@@ -105,6 +120,11 @@ llm-doc-skills/
 ├── latex/
 ├── typst/
 ├── markdown/
+├── github-flavored-markdown/
+├── gitlab-flavored-markdown/
+├── mermaid/
+├── plantuml/
+├── graphviz/
 └── asciidoc/
 ```
 

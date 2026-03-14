@@ -1,8 +1,8 @@
-"""Tests for text-first document wrapper scripts.
+"""Tests for text-first document and diagram wrapper scripts.
 
 These tests exercise pure command-building logic and missing-tool failures
-without requiring Pandoc, a TeX distribution, Typst, cmark-gfm, or Asciidoctor
-in the local environment.
+without requiring Pandoc, a TeX distribution, Typst, cmark-gfm, Mermaid CLI,
+PlantUML, Graphviz, Java, or Asciidoctor in the local environment.
 """
 
 from __future__ import annotations
@@ -137,6 +137,102 @@ class TestMarkdownWrapper(unittest.TestCase):
                 mod.choose_renderer("html")
         self.assertIn("cmark-gfm", str(ctx.exception))
         self.assertIn("pandoc", str(ctx.exception))
+
+
+class TestGithubFlavoredMarkdownWrapper(unittest.TestCase):
+    def test_build_command_defaults_to_gfm_for_pandoc(self):
+        mod = _load_module("github-flavored-markdown/scripts/render.py")
+        cmd = mod.build_command(
+            renderer="pandoc",
+            input_path="README.md",
+            target_format="pdf",
+            output_path="README.pdf",
+            gfm=True,
+            toc=True,
+        )
+        self.assertEqual(
+            cmd,
+            ["pandoc", "README.md", "--to", "pdf", "--from", "gfm", "--output", "README.pdf", "--toc"],
+        )
+
+
+class TestGitlabFlavoredMarkdownWrapper(unittest.TestCase):
+    def test_build_command_uses_gfm_for_export(self):
+        mod = _load_module("gitlab-flavored-markdown/scripts/render.py")
+        cmd = mod.build_command(
+            renderer="pandoc",
+            input_path="page.md",
+            target_format="docx",
+            output_path="page.docx",
+            toc=False,
+        )
+        self.assertEqual(
+            cmd,
+            ["pandoc", "page.md", "--from", "gfm", "--to", "docx", "--output", "page.docx"],
+        )
+
+
+class TestMermaidWrapper(unittest.TestCase):
+    def test_build_command_includes_theme_and_config(self):
+        mod = _load_module("mermaid/scripts/render.py")
+        cmd = mod.build_command(
+            mermaid="mmdc",
+            input_path="flow.mmd",
+            target_format="svg",
+            output_path="flow.svg",
+            theme="neutral",
+            background="white",
+            config_file="mermaid.json",
+        )
+        self.assertEqual(
+            cmd,
+            ["mmdc", "--input", "flow.mmd", "--output", "flow.svg", "--theme", "neutral", "--backgroundColor", "white", "--configFile", "mermaid.json"],
+        )
+
+    def test_find_mermaid_reports_install_hint(self):
+        mod = _load_module("mermaid/scripts/render.py")
+        with mock.patch.object(mod.shutil, "which", return_value=None):
+            with mock.patch.dict(mod.os.environ, {}, clear=True):
+                with self.assertRaises(FileNotFoundError) as ctx:
+                    mod.find_mermaid()
+        self.assertIn("mermaid", str(ctx.exception).lower())
+
+
+class TestPlantumlWrapper(unittest.TestCase):
+    def test_build_command_supports_theme_and_output_dir(self):
+        mod = _load_module("plantuml/scripts/render.py")
+        cmd = mod.build_command(
+            plantuml_cmd=["plantuml"],
+            input_path="diagram.puml",
+            target_format="svg",
+            output_dir="out",
+            theme="plain",
+            config_file="plantuml.cfg",
+        )
+        self.assertEqual(
+            cmd,
+            ["plantuml", "-tsvg", "-o", "out", "-config", "plantuml.cfg", "-theme", "plain", "diagram.puml"],
+        )
+
+
+class TestGraphvizWrapper(unittest.TestCase):
+    def test_build_command_uses_layout_specific_binary(self):
+        mod = _load_module("graphviz/scripts/render.py")
+        cmd = mod.build_command(
+            layout_tool="neato",
+            input_path="graph.dot",
+            target_format="svg",
+            output_path="graph.svg",
+        )
+        self.assertEqual(cmd, ["neato", "-Tsvg", "graph.dot", "-o", "graph.svg"])
+
+    def test_find_layout_tool_reports_install_hint(self):
+        mod = _load_module("graphviz/scripts/render.py")
+        with mock.patch.object(mod.shutil, "which", return_value=None):
+            with mock.patch.dict(mod.os.environ, {}, clear=True):
+                with self.assertRaises(FileNotFoundError) as ctx:
+                    mod.find_layout_tool("dot")
+        self.assertIn("graphviz", str(ctx.exception).lower())
 
 
 class TestAsciiDocWrapper(unittest.TestCase):
