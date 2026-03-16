@@ -4,7 +4,8 @@
 
 # Variables
 PYTHON ?= python3
-SKILLS := $(sort $(patsubst %/SKILL.md,%,$(wildcard */SKILL.md)))
+SKILLS_ROOT := skills
+SKILLS := $(sort $(patsubst $(SKILLS_ROOT)/%/SKILL.md,%,$(wildcard $(SKILLS_ROOT)/*/SKILL.md)))
 BUILD_DIR := built
 ZIP_FILES := $(addprefix $(BUILD_DIR)/,$(addsuffix -skill.zip,$(SKILLS)))
 REPO_DIR := $(notdir $(CURDIR))
@@ -12,7 +13,7 @@ PARENT_DIR := $(dir $(CURDIR))
 
 # Expand each skill target to every tracked file inside the skill directory so
 # package rebuilds happen when assets, scripts, or agent metadata change.
-skill_files = $(shell find $(1) -type f | sort)
+skill_files = $(shell find $(SKILLS_ROOT)/$(1) -type f | sort)
 
 # Default target
 help:
@@ -40,7 +41,7 @@ $(BUILD_DIR):
 $(BUILD_DIR)/%-skill.zip: $(BUILD_DIR) $$(call skill_files,$$*)
 	@echo "Building $*-skill.zip..."
 	@rm -f "$@"
-	@cd "$(PARENT_DIR)" && zip -q -r "$(CURDIR)/$@" "$(REPO_DIR)/$*" -x "$(REPO_DIR)/$*/.DS_Store"
+	@cd "$(PARENT_DIR)" && zip -q -r "$(CURDIR)/$@" "$(REPO_DIR)/$(SKILLS_ROOT)/$*" -x "$(REPO_DIR)/$(SKILLS_ROOT)/$*/.DS_Store"
 	@echo "  ✓ $@ created"
 
 # Build all ZIPs
@@ -61,7 +62,7 @@ all: clean build
 
 # Verify build
 verify:
-	@$(PYTHON) scripts/verify_built_zips.py --build-dir $(BUILD_DIR)
+	@$(PYTHON) scripts/verify_built_zips.py --build-dir $(BUILD_DIR) --skills-dir $(SKILLS_ROOT)
 
 # ---------------------------------------------------------------------------
 # Linting

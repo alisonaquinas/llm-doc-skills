@@ -28,7 +28,7 @@ Right: Grep pattern="recalc\.py" path="/Users/allisonaquinas/llm-doc-skills"
 
 Use for unfamiliar or cross-skill investigation:
 
-- how `office-custom/scripts/` supports both `docx-custom` and `pptx-custom`
+- how `skills/office-custom/scripts/` supports both `docx-custom` and `pptx-custom`
 - where LibreOffice wrappers are reused
 - how a pattern varies across multiple skill directories
 
@@ -56,7 +56,7 @@ images.
 
 ```text
 1. Build or edit the deck
-2. Render with `python pptx-custom/scripts/thumbnail.py file.pptx`
+2. Render with `python skills/pptx-custom/scripts/thumbnail.py file.pptx`
 3. Ask another agent to inspect the rendered slides for overflow, overlap,
    spacing, contrast, or placeholder artifacts
 4. Fix and repeat until the QA pass is clean
@@ -67,15 +67,15 @@ images.
 Read the skill docs before delegating broader exploration.
 
 ```text
-1. Read `docx-custom/SKILL.md`
-2. Read `office-custom/SKILL.md` if the task touches OOXML internals
+1. Read `skills/docx-custom/SKILL.md`
+2. Read `skills/office-custom/SKILL.md` if the task touches OOXML internals
 3. Delegate only what remains unclear
 ```
 
 Good follow-up prompt:
 
 ```text
-"I've read `docx-custom/SKILL.md`. Explore whether `pptx-custom` uses the same
+"I've read `skills/docx-custom/SKILL.md`. Explore whether `pptx-custom` uses the same
 unpack/edit/repack pattern and summarize the differences."
 ```
 

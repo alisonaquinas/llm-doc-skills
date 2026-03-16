@@ -35,10 +35,10 @@ Use the shared Office helpers for existing `.docx`, `.pptx`, and `.xlsx`
 packages:
 
 ```bash
-python office-custom/scripts/unpack.py file.docx unpacked/
+python skills/office-custom/scripts/unpack.py file.docx unpacked/
 # edit files inside unpacked/
-python office-custom/scripts/pack.py unpacked/ output.docx --original file.docx
-python office-custom/scripts/validate.py output.docx
+python skills/office-custom/scripts/pack.py unpacked/ output.docx --original file.docx
+python skills/office-custom/scripts/validate.py output.docx
 ```
 
 ### Spreadsheet recalculation
@@ -47,7 +47,7 @@ When `openpyxl` or XML edits touch formulas, recalculate before handing the
 file to another system:
 
 ```bash
-python xlsx-custom/scripts/recalc.py model.xlsx
+python skills/xlsx-custom/scripts/recalc.py model.xlsx
 ```
 
 ### Presentation QA
@@ -55,36 +55,36 @@ python xlsx-custom/scripts/recalc.py model.xlsx
 Generated or edited decks must be rendered and reviewed visually:
 
 ```bash
-python pptx-custom/scripts/thumbnail.py deck.pptx
+python skills/pptx-custom/scripts/thumbnail.py deck.pptx
 ```
 
 For deeper guidance:
 
-- use [pptx-custom/editing.md](pptx-custom/editing.md) for XML-based edits
-- use [pptx-custom/pptxgenjs.md](pptx-custom/pptxgenjs.md) for generated decks
+- use [skills/pptx-custom/editing.md](skills/pptx-custom/editing.md) for XML-based edits
+- use [skills/pptx-custom/pptxgenjs.md](skills/pptx-custom/pptxgenjs.md) for generated decks
 
 ### PDF workflows
 
-Read [pdf-custom/SKILL.md](pdf-custom/SKILL.md) first, then branch to:
+Read [skills/pdf-custom/SKILL.md](skills/pdf-custom/SKILL.md) first, then branch to:
 
-- [pdf-custom/FORMS.md](pdf-custom/FORMS.md) for AcroForms
-- [pdf-custom/REFERENCE.md](pdf-custom/REFERENCE.md) for advanced operations
+- [skills/pdf-custom/FORMS.md](skills/pdf-custom/FORMS.md) for AcroForms
+- [skills/pdf-custom/REFERENCE.md](skills/pdf-custom/REFERENCE.md) for advanced operations
 
 ### Text-first publishing workflows
 
 Use the text-first skills when the task is centered on authoring or publishing
 from plain-text sources rather than OOXML packages.
 
-- use [pandoc/SKILL.md](pandoc/SKILL.md) for cross-format conversion and publishing
-- use [latex/SKILL.md](latex/SKILL.md) for LaTeX authoring and build orchestration
-- use [typst/SKILL.md](typst/SKILL.md) for Typst-native layout and export
-- use [markdown/SKILL.md](markdown/SKILL.md) for CommonMark and baseline GFM docs work
-- use [github-flavored-markdown/SKILL.md](github-flavored-markdown/SKILL.md) for GitHub-specific Markdown surfaces
-- use [gitlab-flavored-markdown/SKILL.md](gitlab-flavored-markdown/SKILL.md) for GitLab-specific Markdown surfaces
-- use [mermaid/SKILL.md](mermaid/SKILL.md) for Mermaid diagrams in docs workflows
-- use [plantuml/SKILL.md](plantuml/SKILL.md) for UML-style text diagrams
-- use [graphviz/SKILL.md](graphviz/SKILL.md) for DOT and layout-engine-driven graph diagrams
-- use [asciidoc/SKILL.md](asciidoc/SKILL.md) for Asciidoctor publishing flows
+- use [skills/pandoc/SKILL.md](skills/pandoc/SKILL.md) for cross-format conversion and publishing
+- use [skills/latex/SKILL.md](skills/latex/SKILL.md) for LaTeX authoring and build orchestration
+- use [skills/typst/SKILL.md](skills/typst/SKILL.md) for Typst-native layout and export
+- use [skills/markdown/SKILL.md](skills/markdown/SKILL.md) for CommonMark and baseline GFM docs work
+- use [skills/github-flavored-markdown/SKILL.md](skills/github-flavored-markdown/SKILL.md) for GitHub-specific Markdown surfaces
+- use [skills/gitlab-flavored-markdown/SKILL.md](skills/gitlab-flavored-markdown/SKILL.md) for GitLab-specific Markdown surfaces
+- use [skills/mermaid/SKILL.md](skills/mermaid/SKILL.md) for Mermaid diagrams in docs workflows
+- use [skills/plantuml/SKILL.md](skills/plantuml/SKILL.md) for UML-style text diagrams
+- use [skills/graphviz/SKILL.md](skills/graphviz/SKILL.md) for DOT and layout-engine-driven graph diagrams
+- use [skills/asciidoc/SKILL.md](skills/asciidoc/SKILL.md) for Asciidoctor publishing flows
 
 ## Important Implementation Notes
 

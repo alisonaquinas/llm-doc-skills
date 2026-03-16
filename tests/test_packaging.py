@@ -19,7 +19,9 @@ REPO_NAME = REPO_ROOT.name  # "llm-doc-skills"
 
 def _discover_skills() -> list[Path]:
     """Return skill directories that contain SKILL.md."""
-    return sorted(p.parent for p in REPO_ROOT.glob("*/SKILL.md"))
+    skills_root = REPO_ROOT / "skills"
+    search_root = skills_root if skills_root.exists() else REPO_ROOT
+    return sorted(p.parent for p in search_root.glob("*/SKILL.md"))
 
 
 REQUIRED_FILES = ["SKILL.md", "agents/claude.yaml", "agents/openai.yaml"]
@@ -88,8 +90,8 @@ class TestBuiltZipInvariants(unittest.TestCase):
                 with zipfile.ZipFile(zip_path, "r") as zf:
                     names = set(zf.namelist())
                 for rel_path in REQUIRED_FILES:
-                    # ZIPs are rooted at llm-doc-skills/<skill>/
-                    expected = f"{REPO_NAME}/{skill_name}/{rel_path}"
+                    # ZIPs are rooted at llm-doc-skills/skills/<skill>/
+                    expected = f"{REPO_NAME}/skills/{skill_name}/{rel_path}"
                     self.assertIn(
                         expected,
                         names,

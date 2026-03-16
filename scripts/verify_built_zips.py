@@ -10,12 +10,15 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
-def discover_skills(repo_root: Path) -> list[str]:
-    return sorted(path.parent.name for path in repo_root.glob('*/SKILL.md'))
+def discover_skills(repo_root: Path, skills_dir: str = 'skills') -> list[str]:
+    search_root = repo_root / skills_dir
+    if not search_root.exists():
+        search_root = repo_root
+    return sorted(path.parent.name for path in search_root.glob('*/SKILL.md'))
 
 
-def expected_zip_paths(repo_root: Path, build_dir: Path) -> list[Path]:
-    return [build_dir / f"{skill}-skill.zip" for skill in discover_skills(repo_root)]
+def expected_zip_paths(repo_root: Path, build_dir: Path, skills_dir: str = 'skills') -> list[Path]:
+    return [build_dir / f"{skill}-skill.zip" for skill in discover_skills(repo_root, skills_dir)]
 
 
 def verify_zip(path: Path) -> tuple[bool, str]:
@@ -31,14 +34,14 @@ def verify_zip(path: Path) -> tuple[bool, str]:
     return True, 'valid'
 
 
-def run(build_dir: Path) -> int:
+def run(build_dir: Path, skills_dir: str = 'skills') -> int:
     if not build_dir.exists():
         print(f"Error: {build_dir} does not exist. Run 'make build' first.")
         return 1
 
     print('Verifying ZIP files...')
     failures = 0
-    for zip_path in expected_zip_paths(REPO_ROOT, build_dir):
+    for zip_path in expected_zip_paths(REPO_ROOT, build_dir, skills_dir):
         ok, detail = verify_zip(zip_path)
         if ok:
             print(f"  [OK] {zip_path.as_posix()}")
@@ -52,13 +55,14 @@ def run(build_dir: Path) -> int:
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='Verify llm-doc-skills ZIP artifacts.')
     parser.add_argument('--build-dir', default='built', help='Build directory containing *-skill.zip files')
+    parser.add_argument('--skills-dir', default='skills', help='Directory containing skill subdirectories')
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     build_dir = (REPO_ROOT / args.build_dir).resolve()
-    return run(build_dir)
+    return run(build_dir, args.skills_dir)
 
 
 if __name__ == '__main__':
