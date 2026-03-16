@@ -21,13 +21,20 @@ The guidance follows the official Mermaid documentation and Mermaid CLI patterns
 
 ## Quick Start
 
+Before promising an export, verify that Mermaid CLI is installed and runnable:
+
 ```bash
+mmdc --version
+# or, when the executable lives outside PATH
+export MERMAID_CLI_PATH=/absolute/path/to/mmdc
 python mermaid/scripts/render.py architecture.mmd --to svg --output architecture.svg
 ```
 
 ```bash
 python mermaid/scripts/render.py sequence.mmd --to png --output sequence.png --theme neutral
 ```
+
+If `mmdc` is unavailable, stop and surface the install guidance from `mermaid/scripts/render.py` before continuing.
 
 ## Preferred Workflow
 

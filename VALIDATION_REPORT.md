@@ -68,3 +68,11 @@ Environment-limited checks:
 The source tree is normalized for the expanded skill set and passes the skill-
 level packaging and structural checks. Full ZIP rebuild verification still
 depends on a working Unix-shell path for the Makefile-driven packaging steps.
+
+
+## March 16, 2026 Test-Drive Follow-Up
+
+A live scenario-based test drive was run across every skill in the repository.
+The highest-leverage issue found was an `xlsx-custom/scripts/recalc.py` staging bug: LibreOffice conversion attempted to overwrite the staged input workbook when converting to `.xlsx`, which left cached formula results stale. The wrapper now stages input and output in separate temporary directories, and a regression test locks that behavior in place.
+
+The test drive also showed that `typst`, `mermaid`, `plantuml`, and `asciidoc` stop correctly with install hints when their external toolchains are missing. Their skill docs now include explicit preflight checks and environment-variable override guidance so agents can detect those blockers earlier and communicate them clearly.

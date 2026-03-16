@@ -150,18 +150,27 @@ def _recalc_with_soffice(source: Path, dest: Path, quiet: bool = False) -> bool:
         return _recalc_fallback(source, dest, quiet)
 
     with tempfile.TemporaryDirectory() as tmpdir:
-        tmp_src = Path(tmpdir) / source.name
+        tmp_root = Path(tmpdir)
+        input_dir = tmp_root / "input"
+        out_dir = tmp_root / "output"
+        input_dir.mkdir(parents=True, exist_ok=True)
+        out_dir.mkdir(parents=True, exist_ok=True)
+
+        tmp_src = input_dir / source.name
         shutil.copy2(source, tmp_src)
 
-        # --convert-to xlsx re-saves via LibreOffice which triggers recalc.
+        # LibreOffice refuses to overwrite the source workbook in place when
+        # converting to the same format. Stage the input and the converted
+        # workbook in separate directories so the recalculated file is written
+        # as a fresh output artifact.
         result = soffice_module.run([
             "--headless",
             "--convert-to", "xlsx",
-            "--outdir", str(tmpdir),
+            "--outdir", str(out_dir),
             str(tmp_src),
         ])
 
-        tmp_out = Path(tmpdir) / (tmp_src.stem + ".xlsx")
+        tmp_out = out_dir / (tmp_src.stem + ".xlsx")
         if result.returncode != 0 or not tmp_out.exists():
             if not quiet:
                 print(
@@ -221,18 +230,24 @@ def _recalc_fallback(source: Path, dest: Path, quiet: bool) -> bool:
         return False
 
     with tempfile.TemporaryDirectory() as tmpdir:
-        tmp_src = Path(tmpdir) / source.name
+        tmp_root = Path(tmpdir)
+        input_dir = tmp_root / "input"
+        out_dir = tmp_root / "output"
+        input_dir.mkdir(parents=True, exist_ok=True)
+        out_dir.mkdir(parents=True, exist_ok=True)
+
+        tmp_src = input_dir / source.name
         shutil.copy2(source, tmp_src)
 
         cmd = [
             soffice_bin, "--headless",
             "--convert-to", "xlsx",
-            "--outdir", tmpdir,
+            "--outdir", str(out_dir),
             str(tmp_src),
         ]
         result = subprocess.run(cmd, capture_output=True)
 
-        tmp_out = Path(tmpdir) / (tmp_src.stem + ".xlsx")
+        tmp_out = out_dir / (tmp_src.stem + ".xlsx")
         if result.returncode != 0 or not tmp_out.exists():
             if not quiet:
                 print(

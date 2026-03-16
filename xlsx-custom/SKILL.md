@@ -90,7 +90,20 @@ A user may ask you to create, edit, or analyze the contents of an .xlsx file. Yo
 
 ## Important Requirements
 
-**LibreOffice Required for Formula Recalculation**: You can assume LibreOffice is installed for recalculating formula values using the `xlsx-custom/scripts/recalc.py` script. The script automatically configures LibreOffice on first run, including in sandboxed environments where Unix sockets are restricted (handled by `office-custom/scripts/soffice.py`)
+**LibreOffice Preferred for Formula Recalculation**: Prefer `xlsx-custom/scripts/recalc.py` whenever LibreOffice is available, because it refreshes cached formula results for downstream tools. Verify availability first with `soffice --version` (or set `SOFFICE_PATH` if LibreOffice lives outside `PATH`). If LibreOffice is unavailable, say so clearly and warn that formula caches may remain stale until the workbook is reopened in Excel or LibreOffice. The script automatically configures a safe user profile via `office-custom/scripts/soffice.py` when that wrapper is present.
+
+## Tooling preflight
+
+Before relying on recalculated formula values, verify that LibreOffice is callable in the current environment:
+
+```bash
+soffice --version
+# or set an override for non-standard installs
+export SOFFICE_PATH=/absolute/path/to/soffice
+python xlsx-custom/scripts/recalc.py workbook.xlsx recalculated.xlsx
+```
+
+If the check fails, do not claim that cached formula values were refreshed.
 
 ## Reading and analyzing data
 

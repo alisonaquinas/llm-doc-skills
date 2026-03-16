@@ -21,13 +21,20 @@ The guidance follows the official Typst documentation and reference.
 
 ## Quick Start
 
+Before promising a render, verify that the Typst CLI is available in the current environment. Prefer a quick preflight first:
+
 ```bash
+typst --version
+# or, when the executable lives outside PATH
+export TYPST_PATH=/absolute/path/to/typst
 python typst/scripts/compile.py report.typ --format pdf --output report.pdf
 ```
 
 ```bash
 python typst/scripts/compile.py slides.typ --format png --pages 1-3 --ppi 144
 ```
+
+If the CLI is missing, stop and surface the install guidance from `typst/scripts/compile.py` instead of pretending the export succeeded.
 
 ## Preferred Workflow
 

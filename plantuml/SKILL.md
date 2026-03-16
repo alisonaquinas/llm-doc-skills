@@ -21,13 +21,20 @@ The guidance follows the official PlantUML documentation and standard rendering 
 
 ## Quick Start
 
+Before promising an export, verify that PlantUML is actually runnable in the current environment:
+
 ```bash
+plantuml -version
+# or use Java plus a jar when the native launcher is unavailable
+export PLANTUML_JAR_PATH=/absolute/path/to/plantuml.jar
 python plantuml/scripts/render.py system.puml --to svg --output out
 ```
 
 ```bash
 python plantuml/scripts/render.py sequence.puml --to png --output out --theme plain
 ```
+
+If neither the native launcher nor the JAR workflow is available, stop and surface the install guidance from `plantuml/scripts/render.py`.
 
 ## Preferred Workflow
 

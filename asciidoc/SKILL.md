@@ -21,13 +21,23 @@ The guidance follows the AsciiDoc language documentation and Asciidoctor documen
 
 ## Quick Start
 
+Before promising an export, verify that the relevant Asciidoctor executable is available:
+
 ```bash
+asciidoctor --version
+# for PDF output, also verify the PDF backend
+asciidoctor-pdf --version
+# or set explicit overrides when the binaries live outside PATH
+export ASCIIDOCTOR_PATH=/absolute/path/to/asciidoctor
+export ASCIIDOCTOR_PDF_PATH=/absolute/path/to/asciidoctor-pdf
 python asciidoc/scripts/build.py guide.adoc --to html --output guide.html
 ```
 
 ```bash
 python asciidoc/scripts/build.py handbook.adoc --to pdf --output handbook.pdf --attribute toc=left
 ```
+
+If the executable is missing, stop and surface the install guidance from `asciidoc/scripts/build.py` before continuing.
 
 ## Preferred Workflow
 
