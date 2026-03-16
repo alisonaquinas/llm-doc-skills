@@ -69,7 +69,6 @@ The source tree is normalized for the expanded skill set and passes the skill-
 level packaging and structural checks. Full ZIP rebuild verification still
 depends on a working Unix-shell path for the Makefile-driven packaging steps.
 
-
 ## March 16, 2026 Test-Drive Follow-Up
 
 A live scenario-based test drive was run across every skill in the repository.

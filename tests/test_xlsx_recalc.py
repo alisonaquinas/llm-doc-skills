@@ -10,10 +10,15 @@ from unittest import mock
 
 from xlsx_custom_recalc_loader import load_module
 
+try:
+    recalc = load_module()
+    _RECALC_AVAILABLE = True
+except ImportError:
+    recalc = None
+    _RECALC_AVAILABLE = False
 
-recalc = load_module()
 
-
+@unittest.skipUnless(_RECALC_AVAILABLE, "openpyxl not installed")
 class TestRecalcLibreOfficeStaging(unittest.TestCase):
     """LibreOffice conversion must not reuse the source path as the output path."""
 
