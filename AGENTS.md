@@ -92,6 +92,14 @@ Only delegate when all of these are true:
 Default behavior: use direct tools first, then delegate only when another pass
 will add real value.
 
+## Git Workflow
+
+This repo uses **trunk-based development**. The developer works alone.
+
+- Commit directly to `main`. Do not create feature branches or open pull requests.
+- Push directly: `git push origin main`.
+- For releases, tag the commit on `main` and push the tag.
+
 ## Release Process
 
 Before tagging a release, complete these steps in order:
