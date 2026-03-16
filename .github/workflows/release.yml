@@ -57,6 +57,9 @@ jobs:
       - name: Build skill ZIPs
         run: make all
 
+      - name: Build plugin bundle ZIP
+        run: make bundle
+
       - name: Extract changelog notes
         id: notes
         run: |

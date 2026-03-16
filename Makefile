@@ -1,9 +1,10 @@
-.PHONY: all build clean help list verify lint test test-unit
+.PHONY: all build bundle clean help list verify lint test test-unit
 .DEFAULT_GOAL := help
 .SECONDEXPANSION:
 
 # Variables
 PYTHON ?= python3
+PLUGIN_NAME := doc-skills
 SKILLS_ROOT := skills
 SKILLS := $(sort $(patsubst $(SKILLS_ROOT)/%/SKILL.md,%,$(wildcard $(SKILLS_ROOT)/*/SKILL.md)))
 BUILD_DIR := built
@@ -25,6 +26,7 @@ help:
 	@echo "  make list              - List the ZIPs currently in $(BUILD_DIR)/"
 	@echo "  make clean             - Remove $(BUILD_DIR)/ folder and all ZIP files"
 	@echo "  make all               - Clean then build (fresh build)"
+	@echo "  make bundle            - Build all skill ZIPs then package into $(PLUGIN_NAME)-plugin.zip"
 	@echo "  make lint              - Lint Markdown, Python, YAML, and skill structure"
 	@echo "  make test              - Run lint + unit tests"
 	@echo "  make test-unit         - Run Python unit tests only (stdlib, no external tools)"
@@ -59,6 +61,12 @@ all: clean build
 	@echo ""
 	@echo "Full rebuild complete!"
 	@echo "Skills available in: $(BUILD_DIR)/"
+
+# Package all skill ZIPs into a single plugin bundle
+bundle: build
+	@echo "Building $(PLUGIN_NAME)-plugin.zip..."
+	@cd $(BUILD_DIR) && zip -q $(PLUGIN_NAME)-plugin.zip *-skill.zip
+	@echo "  ✓ $(BUILD_DIR)/$(PLUGIN_NAME)-plugin.zip created"
 
 # Verify build
 verify:
