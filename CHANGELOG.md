@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-03-16
+
+### Added
+
+- `Makefile`: added `bundle` target that packages all built `*-skill.zip` files into a single `doc-skills-plugin.zip` for one-click offline installation; `PLUGIN_NAME := doc-skills` variable drives the output filename
+
+### Changed
+
+- `Makefile`: extended `.PHONY` to include `bundle`; updated `help` text to document the new target
+- `.github/workflows/release.yml`: added "Build plugin bundle ZIP" step (`make bundle`) so `doc-skills-plugin.zip` is uploaded alongside the individual skill ZIPs on every tag release
+
 ## [1.1.0] - 2026-03-16
 
 ### Added
