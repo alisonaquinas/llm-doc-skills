@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-MODULE_PATH = REPO_ROOT / "xlsx-custom" / "scripts" / "recalc.py"
+MODULE_PATH = REPO_ROOT / "skills" / "xlsx-custom" / "scripts" / "recalc.py"
 
 
 def load_module():

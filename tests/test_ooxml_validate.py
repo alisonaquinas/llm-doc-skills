@@ -21,7 +21,7 @@ class TestOoxmlValidate(unittest.TestCase):
         import importlib.util
         spec = importlib.util.spec_from_file_location(
             "validate",
-            REPO_ROOT / "office-custom" / "scripts" / "validate.py",
+            REPO_ROOT / "skills" / "office-custom" / "scripts" / "validate.py",
         )
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)

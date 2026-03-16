@@ -28,7 +28,7 @@ else:
     _HAS_ODFPY = True
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-SCRIPT_PATH = REPO_ROOT / "raw-document" / "scripts" / "validate_xml.py"
+SCRIPT_PATH = REPO_ROOT / "skills" / "raw-document" / "scripts" / "validate_xml.py"
 
 
 def _load_module():

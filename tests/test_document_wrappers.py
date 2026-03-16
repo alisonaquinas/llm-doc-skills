@@ -26,7 +26,7 @@ def _load_module(rel_path: str):
 
 class TestPandocWrapper(unittest.TestCase):
     def test_build_command_includes_common_options(self):
-        mod = _load_module("pandoc/scripts/convert.py")
+        mod = _load_module("skills/pandoc/scripts/convert.py")
         cmd = mod.build_command(
             pandoc="pandoc",
             input_path="input.md",
@@ -61,7 +61,7 @@ class TestPandocWrapper(unittest.TestCase):
         )
 
     def test_find_pandoc_reports_install_hint(self):
-        mod = _load_module("pandoc/scripts/convert.py")
+        mod = _load_module("skills/pandoc/scripts/convert.py")
         with mock.patch.object(mod.shutil, "which", return_value=None):
             with self.assertRaises(FileNotFoundError) as ctx:
                 mod.find_pandoc()
@@ -70,7 +70,7 @@ class TestPandocWrapper(unittest.TestCase):
 
 class TestLatexWrappers(unittest.TestCase):
     def test_build_command_uses_engine_and_outdir(self):
-        mod = _load_module("latex/scripts/build.py")
+        mod = _load_module("skills/latex/scripts/build.py")
         cmd = mod.build_command(
             latexmk="latexmk",
             input_path="paper.tex",
@@ -93,7 +93,7 @@ class TestLatexWrappers(unittest.TestCase):
         )
 
     def test_clean_targets_cover_common_aux_files(self):
-        mod = _load_module("latex/scripts/clean.py")
+        mod = _load_module("skills/latex/scripts/clean.py")
         targets = mod.collect_cleanup_targets("report.tex", "build")
         self.assertIn(Path("build") / "report.aux", targets)
         self.assertIn(Path("build") / "report.fdb_latexmk", targets)
@@ -101,7 +101,7 @@ class TestLatexWrappers(unittest.TestCase):
 
 class TestTypstWrapper(unittest.TestCase):
     def test_build_command_includes_root_pages_and_ppi(self):
-        mod = _load_module("typst/scripts/compile.py")
+        mod = _load_module("skills/typst/scripts/compile.py")
         cmd = mod.build_command(
             typst="typst",
             input_path="deck.typ",
@@ -119,7 +119,7 @@ class TestTypstWrapper(unittest.TestCase):
 
 class TestMarkdownWrapper(unittest.TestCase):
     def test_html_command_prefers_cmark_output_shape(self):
-        mod = _load_module("markdown/scripts/render.py")
+        mod = _load_module("skills/markdown/scripts/render.py")
         cmd = mod.build_command(
             renderer="cmark-gfm",
             input_path="README.md",
@@ -131,7 +131,7 @@ class TestMarkdownWrapper(unittest.TestCase):
         self.assertEqual(cmd, ["cmark-gfm", "README.md"])
 
     def test_choose_renderer_reports_helpful_error(self):
-        mod = _load_module("markdown/scripts/render.py")
+        mod = _load_module("skills/markdown/scripts/render.py")
         with mock.patch.object(mod, "find_tool", return_value=None):
             with self.assertRaises(FileNotFoundError) as ctx:
                 mod.choose_renderer("html")
@@ -141,7 +141,7 @@ class TestMarkdownWrapper(unittest.TestCase):
 
 class TestGithubFlavoredMarkdownWrapper(unittest.TestCase):
     def test_build_command_defaults_to_gfm_for_pandoc(self):
-        mod = _load_module("github-flavored-markdown/scripts/render.py")
+        mod = _load_module("skills/github-flavored-markdown/scripts/render.py")
         cmd = mod.build_command(
             renderer="pandoc",
             input_path="README.md",
@@ -158,7 +158,7 @@ class TestGithubFlavoredMarkdownWrapper(unittest.TestCase):
 
 class TestGitlabFlavoredMarkdownWrapper(unittest.TestCase):
     def test_build_command_uses_gfm_for_export(self):
-        mod = _load_module("gitlab-flavored-markdown/scripts/render.py")
+        mod = _load_module("skills/gitlab-flavored-markdown/scripts/render.py")
         cmd = mod.build_command(
             renderer="pandoc",
             input_path="page.md",
@@ -174,7 +174,7 @@ class TestGitlabFlavoredMarkdownWrapper(unittest.TestCase):
 
 class TestMermaidWrapper(unittest.TestCase):
     def test_build_command_includes_theme_and_config(self):
-        mod = _load_module("mermaid/scripts/render.py")
+        mod = _load_module("skills/mermaid/scripts/render.py")
         cmd = mod.build_command(
             mermaid="mmdc",
             input_path="flow.mmd",
@@ -190,7 +190,7 @@ class TestMermaidWrapper(unittest.TestCase):
         )
 
     def test_find_mermaid_reports_install_hint(self):
-        mod = _load_module("mermaid/scripts/render.py")
+        mod = _load_module("skills/mermaid/scripts/render.py")
         with mock.patch.object(mod.shutil, "which", return_value=None):
             with mock.patch.dict(mod.os.environ, {}, clear=True):
                 with self.assertRaises(FileNotFoundError) as ctx:
@@ -200,7 +200,7 @@ class TestMermaidWrapper(unittest.TestCase):
 
 class TestPlantumlWrapper(unittest.TestCase):
     def test_build_command_supports_theme_and_output_dir(self):
-        mod = _load_module("plantuml/scripts/render.py")
+        mod = _load_module("skills/plantuml/scripts/render.py")
         cmd = mod.build_command(
             plantuml_cmd=["plantuml"],
             input_path="diagram.puml",
@@ -217,7 +217,7 @@ class TestPlantumlWrapper(unittest.TestCase):
 
 class TestGraphvizWrapper(unittest.TestCase):
     def test_build_command_uses_layout_specific_binary(self):
-        mod = _load_module("graphviz/scripts/render.py")
+        mod = _load_module("skills/graphviz/scripts/render.py")
         cmd = mod.build_command(
             layout_tool="neato",
             input_path="graph.dot",
@@ -227,7 +227,7 @@ class TestGraphvizWrapper(unittest.TestCase):
         self.assertEqual(cmd, ["neato", "-Tsvg", "graph.dot", "-o", "graph.svg"])
 
     def test_find_layout_tool_reports_install_hint(self):
-        mod = _load_module("graphviz/scripts/render.py")
+        mod = _load_module("skills/graphviz/scripts/render.py")
         with mock.patch.object(mod.shutil, "which", return_value=None):
             with mock.patch.dict(mod.os.environ, {}, clear=True):
                 with self.assertRaises(FileNotFoundError) as ctx:
@@ -237,7 +237,7 @@ class TestGraphvizWrapper(unittest.TestCase):
 
 class TestAsciiDocWrapper(unittest.TestCase):
     def test_build_command_uses_backend_and_attributes(self):
-        mod = _load_module("asciidoc/scripts/build.py")
+        mod = _load_module("skills/asciidoc/scripts/build.py")
         cmd = mod.build_command(
             tool="asciidoctor",
             input_path="guide.adoc",
