@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-03-16
+
+### Added
+
+- `skills/raw-document`: added XML validation reference, helper script, and tests for inspecting and repairing documents at the raw byte or XML level
+
+### Changed
+
+- moved all skill directories into a `skills/` subdirectory to align the repo layout with the rest of the skill workspace
+- updated all internal script paths, test imports, and README links to match the new `skills/` prefix
+
+### Fixed
+
+- `tests/test_xlsx_recalc.py`: loader now catches `SystemExit` from `recalc.py` when openpyxl is not installed and converts it to `ImportError` so the test class is skipped cleanly instead of aborting discovery
+- `VALIDATION_REPORT.md`: removed double blank line that triggered MD012
+- README skill table and Quick Start command paths corrected to include `skills/` prefix
+
 ## [0.1.1] - 2026-03-14
 
 ### Fixed
