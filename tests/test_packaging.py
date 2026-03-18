@@ -88,7 +88,7 @@ class TestBuiltZipInvariants(unittest.TestCase):
             skill_name = zip_path.stem.replace("-skill", "")
             with self.subTest(zip=zip_path.name):
                 with zipfile.ZipFile(zip_path, "r") as zf:
-                    names = set(zf.namelist())
+                    names = {name.replace("\\", "/") for name in zf.namelist()}
                 for rel_path in REQUIRED_FILES:
                     # ZIPs are rooted at llm-doc-skills/skills/<skill>/
                     expected = f"{REPO_NAME}/skills/{skill_name}/{rel_path}"

@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.2] - 2026-03-18
+
+### Fixed
+
+- Fixed packaging invariants so each built skill ZIP is verified to include the required `SKILL.md`, `agents/claude.yaml`, and `agents/openai.yaml` members under the repo-rooted path (`llm-doc-skills/skills/<skill>/...`).
+- Hardened `tests/test_ooxml_validate.py` temp workflow by using deterministic repo-local work directories and explicit cleanup to avoid Windows tempfile lifecycle and path-fragility failures.
+
+## [1.2.1] - 2026-03-18
+
+### Added
+
+- Added repository-wide skill agent and command scaffolding for all skills, including per-skill `agents/` manifests and `commands/` entries, so skill invocations can be routed consistently by both Claude and Codex clients.
+- Added `hooks/hooks.json` with preconfigured hooks for agent selection and command execution orchestration.
+
 ## [1.2.0] - 2026-03-16
 
 ### Added
