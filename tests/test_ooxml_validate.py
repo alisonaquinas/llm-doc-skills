@@ -1,16 +1,29 @@
 """Tests for office-custom/scripts/validate.py — generic OOXML validation."""
 
 import sys
+import shutil
 import tempfile
 import unittest
 import zipfile
 from pathlib import Path
+from contextlib import contextmanager
 
 # Ensure repo root is importable
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 
 from tests._fixtures import make_minimal_docx  # noqa: E402
+
+
+@contextmanager
+def _temp_test_dir(prefix: str):
+    """Yield a deterministic temp directory under repo for stable path handling."""
+    tmp_root = Path(tempfile.gettempdir())
+    path = Path(tempfile.mkdtemp(prefix=prefix, dir=str(tmp_root)))
+    try:
+        yield path
+    finally:
+        shutil.rmtree(path, ignore_errors=True)
 
 
 class TestOoxmlValidate(unittest.TestCase):
@@ -28,13 +41,13 @@ class TestOoxmlValidate(unittest.TestCase):
         return mod.validate(path, quiet=quiet)
 
     def test_valid_minimal_docx_passes(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            path = make_minimal_docx(Path(tmp) / "ok.docx")
+        with _temp_test_dir("valid-") as tmp:
+            path = make_minimal_docx(tmp / "ok.docx")
             self.assertTrue(self._validate(path))
 
     def test_missing_content_types_fails(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp) / "broken.docx"
+        with _temp_test_dir("content-types-") as tmp:
+            path = tmp / "broken.docx"
             # Write a ZIP without [Content_Types].xml
             with zipfile.ZipFile(path, "w") as zf:
                 zf.writestr("_rels/.rels", "<Relationships/>")
@@ -42,8 +55,8 @@ class TestOoxmlValidate(unittest.TestCase):
             self.assertFalse(self._validate(path))
 
     def test_missing_root_rels_fails(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp) / "broken.docx"
+        with _temp_test_dir("root-rels-") as tmp:
+            path = tmp / "broken.docx"
             with zipfile.ZipFile(path, "w") as zf:
                 zf.writestr("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>')
                 # _rels/.rels intentionally omitted
@@ -51,8 +64,8 @@ class TestOoxmlValidate(unittest.TestCase):
             self.assertFalse(self._validate(path))
 
     def test_malformed_xml_fails(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp) / "broken.docx"
+        with _temp_test_dir("malformed-") as tmp:
+            path = tmp / "broken.docx"
             with zipfile.ZipFile(path, "w") as zf:
                 zf.writestr("[Content_Types].xml", '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>')
                 zf.writestr("_rels/.rels", "<Relationships/>")
@@ -60,13 +73,13 @@ class TestOoxmlValidate(unittest.TestCase):
             self.assertFalse(self._validate(path))
 
     def test_not_a_zip_fails(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp) / "notzip.docx"
+        with _temp_test_dir("not-zip-") as tmp:
+            path = tmp / "notzip.docx"
             path.write_bytes(b"This is not a ZIP file at all.")
             self.assertFalse(self._validate(path))
 
     def test_nonexistent_file_fails(self):
-        path = Path("/tmp/does_not_exist_ever_12345.docx")
+        path = REPO_ROOT / "tests" / "tmp" / "ooxml-validate" / "does_not_exist_ever_12345.docx"
         self.assertFalse(self._validate(path))
 
 

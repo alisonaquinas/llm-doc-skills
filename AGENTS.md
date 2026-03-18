@@ -116,3 +116,28 @@ The release workflow (`.github/workflows/release.yml`) will then:
 - Run `make all` to build ZIP artifacts
 - Create a GitHub Release with the ZIPs attached
 - Trigger a marketplace rebuild on `alisonaquinas/llm-skills`
+
+---
+
+## Command + Agent Templates
+
+### Command Templates
+
+```bash
+# Direct tools first
+rg --files skills
+rg "<pattern>" skills/<skill-name>
+diff <file-a> <file-b>
+
+# Repo quality gates
+make test
+make all
+```
+
+### Agent Template (Docs/Publishing Domain)
+
+1. Use direct search/read for trivial tasks; avoid unnecessary delegation.
+2. Read relevant `SKILL.md` files before cross-skill exploration.
+3. Delegate only bounded, non-trivial investigation.
+4. For slide workflows, include a render-and-visual-QA pass.
+5. Keep examples reproducible, safe, and format-accurate.

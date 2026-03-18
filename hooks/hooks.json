@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "You are in llm-doc-skills. Prefer direct reading/search for simple tasks and follow direct-deployment guidance for document workflows."
+          }
+        ]
+      }
+    ]
+  }
+}
