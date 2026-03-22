@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.4] - 2026-03-22
+
+### Fixed
+
+- Removed broken `SessionStart` prompt hook from `hooks/hooks.json`. The `type: "prompt"` hook requires a `ToolUseContext` that does not exist at session start, causing "ToolUseContext is required for prompt hooks" errors on every startup.
+
 ## [1.2.3] - 2026-03-16
 
 ### Added
