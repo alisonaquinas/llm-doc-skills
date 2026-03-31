@@ -1,0 +1,6 @@
+interface:
+  display_name: "Obsidian Docs and Vault Organization Skill"
+  short_description: "Organize and document Obsidian vaults"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  default_prompt: "Use $obsidian-docs when a task involves Obsidian vault documentation, note organization, Maps of Content, index notes, inter-note navigation, graph view strategy, or building a local knowledge base."

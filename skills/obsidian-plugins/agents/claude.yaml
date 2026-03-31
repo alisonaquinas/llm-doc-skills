@@ -1,0 +1,6 @@
+interface:
+  display_name: "Obsidian Plugins Management Skill"
+  short_description: "Manage Obsidian core and community plugins"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  default_prompt: "Use $obsidian-plugins when a task involves managing Obsidian plugins, enabling community or core plugins, installing via BRAT, configuring plugin settings, or working with plugin data files."

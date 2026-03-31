@@ -1,0 +1,6 @@
+interface:
+  display_name: "Obsidian Flavored Markdown Skill"
+  short_description: "Author and audit Obsidian OFM syntax"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  default_prompt: "Use $obsidian-flavored-markdown when a task involves Obsidian Flavored Markdown, wikilinks, embeds, callouts, block references, frontmatter properties, inline tags, or OFM-to-Markdown conversion."

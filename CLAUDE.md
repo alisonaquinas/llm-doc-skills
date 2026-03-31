@@ -26,6 +26,12 @@ manifests, assets, and helper scripts as needed.
 | `plantuml` | PlantUML authoring, includes, themes, and UML-oriented rendering |
 | `graphviz` | DOT authoring, layout engine selection, and Graphviz export |
 | `asciidoc` | AsciiDoc authoring, attributes, includes, and Asciidoctor backends |
+| `obsidian-docs` | Obsidian vault documentation, MOC design, note organization, and graph navigation |
+| `obsidian-config` | Obsidian `.obsidian/` settings, themes, CSS snippets, and vault sync |
+| `obsidian-flavored-markdown` | OFM syntax: wikilinks, embeds, callouts, properties, and tags |
+| `obsidian-plugins` | Obsidian core and community plugin management, BRAT, and plugin data |
+| `obsidian-templates` | Obsidian core templates, Templater plugin, and frontmatter injection |
+| `obsidian-canvas` | Obsidian Canvas `.canvas` JSON authoring and visual knowledge maps |
 
 ## Core Workflows
 
@@ -85,6 +91,17 @@ from plain-text sources rather than OOXML packages.
 - use [skills/plantuml/SKILL.md](skills/plantuml/SKILL.md) for UML-style text diagrams
 - use [skills/graphviz/SKILL.md](skills/graphviz/SKILL.md) for DOT and layout-engine-driven graph diagrams
 - use [skills/asciidoc/SKILL.md](skills/asciidoc/SKILL.md) for Asciidoctor publishing flows
+
+### Obsidian vault workflows
+
+Use the Obsidian skills when working inside a local Obsidian vault.
+
+- use [skills/obsidian-docs/SKILL.md](skills/obsidian-docs/SKILL.md) for vault structure, MOCs, and knowledge-base patterns
+- use [skills/obsidian-config/SKILL.md](skills/obsidian-config/SKILL.md) for `.obsidian/` settings, themes, and sync
+- use [skills/obsidian-flavored-markdown/SKILL.md](skills/obsidian-flavored-markdown/SKILL.md) for OFM syntax including wikilinks, callouts, and properties
+- use [skills/obsidian-plugins/SKILL.md](skills/obsidian-plugins/SKILL.md) for plugin management and BRAT
+- use [skills/obsidian-templates/SKILL.md](skills/obsidian-templates/SKILL.md) for Core Templates and Templater authoring
+- use [skills/obsidian-canvas/SKILL.md](skills/obsidian-canvas/SKILL.md) for `.canvas` JSON authoring and visual maps
 
 ## Important Implementation Notes
 

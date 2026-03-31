@@ -11,6 +11,17 @@
           }
         ]
       }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'f=\"${CLAUDE_TOOL_RESULT_FILE_PATH:-}\"; [[ \"$f\" == *.canvas ]] && python -c \"import json,sys; json.load(open(sys.argv[1]))\" \"$f\" && echo \"canvas JSON valid: $f\" || true'"
+          }
+        ]
+      }
     ]
   }
 }

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Obsidian Templates Authoring Skill"
+  short_description: "Build Obsidian core and Templater templates"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  default_prompt: "Use $obsidian-templates when a task involves Obsidian template authoring, the Core Templates plugin, Templater plugin syntax, daily note templates, frontmatter injection, or dynamic tp.* variables."

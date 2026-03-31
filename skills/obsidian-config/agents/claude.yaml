@@ -1,0 +1,6 @@
+interface:
+  display_name: "Obsidian Vault Configuration Skill"
+  short_description: "Configure Obsidian settings and appearance"
+  icon_small: "./assets/icon.svg"
+  icon_large: "./assets/icon.svg"
+  default_prompt: "Use $obsidian-config when a task involves configuring an Obsidian vault, editing .obsidian/ settings, managing hotkeys, applying themes or CSS snippets, or setting up vault sync and backup."
