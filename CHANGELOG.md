@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-03-31
+
+### Added
+
+- Added full Obsidian vault skill suite: six new skills covering local vault workflows — `obsidian-docs` (vault structure, Maps of Content, navigation, and knowledge-base patterns), `obsidian-config` (.obsidian/ settings, themes, CSS snippets, and sync), `obsidian-flavored-markdown` (wikilinks, embeds, callouts, block references, properties, and tags), `obsidian-plugins` (core and community plugin management and BRAT), `obsidian-templates` (Core Templates and Templater plugin authoring), and `obsidian-canvas` (.canvas JSON schema and visual knowledge maps).
+- Added `agents/obsidian-maintainer.md` domain specialist agent scoped to the six Obsidian skills.
+- Added `commands/obsidian-vault-health.md` health-check command covering broken wikilinks, orphan notes, canvas JSON validation, frontmatter audits, tag frequency, and plugin config validation.
+
+### Fixed
+
+- Replaced broken `SessionStart` prompt hook in `hooks/hooks.json` with a working `command`-type hook that invokes the session-start script via `run-hook.cmd`, eliminating "ToolUseContext is required for prompt hooks" errors. Also added `PostToolUse` hook that validates `.canvas` files as well-formed JSON after any Write operation.
+
 ## [1.2.4] - 2026-03-22
 
 ### Fixed
