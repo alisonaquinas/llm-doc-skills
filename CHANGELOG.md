@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-03-31
+
+### Fixed
+
+- Normalized file permissions on `hooks/run-hook.cmd` and `hooks/session-start` from executable (100755) to standard (100644) to match the rest of the repository and avoid spurious modified-file noise after pulls.
+
 ## [1.3.0] - 2026-03-31
 
 ### Added
