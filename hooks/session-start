@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# SessionStart hook for llm-doc-skills plugin
+
+set -euo pipefail
+
+CONTEXT="You are in llm-doc-skills. Prefer direct reading/search for simple tasks and follow direct-deployment guidance for document workflows."
+
+# Escape for JSON embedding
+escape_for_json() {
+    local s="$1"
+    s="${s//\\/\\\\}"
+    s="${s//\"/\\\"}"
+    s="${s//$'\n'/\\n}"
+    s="${s//$'\r'/\\r}"
+    s="${s//$'\t'/\\t}"
+    printf '%s' "$s"
+}
+
+context_escaped=$(escape_for_json "$CONTEXT")
+
+if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
+    printf '{\n  "additional_context": "%s"\n}\n' "$context_escaped"
+elif [ -n "${CLAUDE_PLUGIN_ROOT:-}" ]; then
+    printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$context_escaped"
+else
+    printf '{\n  "additional_context": "%s"\n}\n' "$context_escaped"
+fi
+
+exit 0
