@@ -1,5 +1,7 @@
 # llm-doc-skills
 
+Browse and install these skills at [llm-skills.alisonaquinas.com](https://llm-skills.alisonaquinas.com/).
+
 `llm-doc-skills` is a repository of packaged skills for working with common
 document formats and publishing toolchains. The repo is designed to ship cleanly
 for both Claude and OpenAI agent runtimes and includes shared helper scripts for
