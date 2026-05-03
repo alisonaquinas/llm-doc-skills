@@ -1,12 +1,12 @@
 """Tests for office-custom/scripts/validate.py — generic OOXML validation."""
 
-import sys
 import shutil
+import sys
 import tempfile
 import unittest
 import zipfile
-from pathlib import Path
 from contextlib import contextmanager
+from pathlib import Path
 
 # Ensure repo root is importable
 REPO_ROOT = Path(__file__).resolve().parents[1]
