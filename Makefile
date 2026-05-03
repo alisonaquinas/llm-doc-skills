@@ -1,4 +1,4 @@
-.PHONY: all build bundle clean help list verify lint test test-unit
+.PHONY: all build bundle codex-bundle clean help list verify lint test test-unit
 .DEFAULT_GOAL := help
 .SECONDEXPANSION:
 
@@ -28,6 +28,7 @@ help:
 	@echo "  make clean             - Remove $(BUILD_DIR)/ folder and all ZIP files"
 	@echo "  make all               - Clean then build (fresh build)"
 	@echo "  make bundle            - Build all skill ZIPs then package into $(PLUGIN_NAME)-plugin.zip"
+	@echo "  make codex-bundle      - Build a Codex plugin ZIP with .codex-plugin and skills/"
 	@echo "  make lint              - Lint Markdown, Python, YAML, and skill structure"
 	@echo "  make test              - Run lint + unit tests"
 	@echo "  make test-unit         - Run Python unit tests only (stdlib, no external tools)"
@@ -69,6 +70,15 @@ bundle: build
 	@cd $(BUILD_DIR) && zip -q $(PLUGIN_NAME)-plugin.zip *-skill.zip
 	@echo "  ✓ $(BUILD_DIR)/$(PLUGIN_NAME)-plugin.zip created"
 
+codex-bundle: build
+	@$(PYTHON) scripts/validate_plugin_manifests.py
+	@echo "Building $(PLUGIN_NAME)-codex-plugin.zip..."
+	@rm -f "$(BUILD_DIR)/$(PLUGIN_NAME)-codex-plugin.zip"
+	@cd "$(PARENT_DIR)" && zip -q -r "$(CURDIR)/$(BUILD_DIR)/$(PLUGIN_NAME)-codex-plugin.zip" \
+		"$(REPO_DIR)/.codex-plugin" "$(PACKAGED_ROOT)" \
+		-x "$(REPO_DIR)/$(SKILLS_ROOT)/*/.DS_Store"
+	@echo "  ✓ $(BUILD_DIR)/$(PLUGIN_NAME)-codex-plugin.zip created"
+
 # Verify build
 verify:
 	@$(PYTHON) scripts/verify_built_zips.py --build-dir $(BUILD_DIR) --skills-dir $(SKILLS_ROOT)
@@ -90,6 +100,8 @@ lint:
 	@$(PYTHON) scripts/lint_skills.py || exit 1
 	@echo "==> Skill quality pre-flight (V01–V08)..."
 	@$(PYTHON) scripts/validate_skills.py || exit 1
+	@echo "==> Plugin manifests..."
+	@$(PYTHON) scripts/validate_plugin_manifests.py || exit 1
 	@echo ""
 	@echo "Lint passed."
 
