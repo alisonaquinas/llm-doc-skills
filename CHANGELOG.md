@@ -7,10 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.2] - 2026-05-15
+
 ### Added
 
 - Added `.codex-plugin/plugin.json` so the doc skills bundle can be published through a Codex plugin marketplace.
 - Added `scripts/validate_plugin_manifests.py` and `make codex-bundle` to validate Codex/Claude manifest alignment and build `doc-skills-codex-plugin.zip`.
+- Added back-link to the LLM Skills Marketplace from `README.md`.
 
 ## [1.3.1] - 2026-03-31
 
