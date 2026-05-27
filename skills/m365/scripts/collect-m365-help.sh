@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+: "${NO_UPDATE_NOTIFIER:=1}"
+export NO_UPDATE_NOTIFIER
+
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 skill_root="$(cd "${script_dir}/.." && pwd)"
 out_dir="${skill_root}/references/generated"
 mkdir -p "$out_dir"
 
-version="$(m365 version)"
+version="$(m365 version --output text)"
 m365 --help > "${out_dir}/m365-help.txt"
 
 {
@@ -19,4 +22,3 @@ grep -E '^[[:space:]]{2}[a-z0-9]+ \* ' "${out_dir}/m365-help.txt" | awk '{print 
   m365 "$group" --help > "${out_dir}/${group}-help.txt"
   printf -- '- `%s` -> `references/generated/%s-help.txt`\n' "$group" "$group" >> "${out_dir}/index.md"
 done
-

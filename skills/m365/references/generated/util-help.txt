@@ -1,8 +1,7 @@
-﻿
+
 CLI for Microsoft 365 v11.8.0
 Manage Microsoft 365 and SharePoint Framework projects on any platform 
 
 Commands groups:
 
   util accesstoken *  1 command
-

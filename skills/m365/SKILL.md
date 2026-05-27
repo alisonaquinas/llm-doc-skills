@@ -31,9 +31,10 @@ Safe verification commands:
 ```bash
 node --version
 npm --version
-m365 version
-m365 status
+m365 version --output text
+m365 status --output text
 m365 --help
+m365 docs --output text
 ```
 
 Install the stable CLI:
@@ -66,18 +67,19 @@ m365 spo file list --help examples
 
 ```bash
 npm install -g @pnp/cli-microsoft365
-m365 version
-m365 status
-m365 cli doctor
+m365 version --output text
+m365 status --output text
+m365 docs --output text
 ```
 
-Load `references/install-and-setup.md` for runtime and setup details.
+Load `references/install-and-setup.md` for runtime and setup details. Run `m365 cli doctor` only after login, because
+it can fail on a logged-out workstation.
 
 ### Human Operator Login
 
 ```bash
 m365 login --authType browser --tenant contoso.onmicrosoft.com --connectionName admin-workstation
-m365 status
+m365 status --output text
 ```
 
 Load `references/authentication-and-permissions.md` before selecting unattended auth.
@@ -110,6 +112,15 @@ m365 cli config set --key helpMode --value full
 ```
 
 Load `references/mcp-server.md` before connecting authenticated tenant access to agent tooling.
+
+## Windows Notes
+
+- Prefer `pwsh -NoProfile -File skills/m365/scripts/verify-m365-install.ps1` and
+  `pwsh -NoProfile -File skills/m365/scripts/collect-m365-help.ps1` to avoid user-profile noise during verification.
+- If non-interactive runs print update-check warnings, set `NO_UPDATE_NOTIFIER=1` for that shell session before running
+  `m365`.
+- Use `--output text` for scalar checks such as `version`, `status`, and `docs` to avoid quoted JSON-string output in
+  scripts.
 
 ## Resource Index
 

@@ -1,4 +1,4 @@
-﻿
+
 CLI for Microsoft 365 v11.8.0
 Manage Microsoft 365 and SharePoint Framework projects on any platform 
 
@@ -9,4 +9,3 @@ Commands groups:
   planner roster *  8 commands
   planner task *    11 commands
   planner tenant *  2 commands
-

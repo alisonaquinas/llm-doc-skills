@@ -1,4 +1,4 @@
-﻿
+
 CLI for Microsoft 365 v11.8.0
 Manage Microsoft 365 and SharePoint Framework projects on any platform 
 
@@ -44,4 +44,3 @@ Commands groups:
   todo *          10 commands
   util *          1 command
   viva *          30 commands
-

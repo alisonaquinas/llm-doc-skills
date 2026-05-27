@@ -1,4 +1,4 @@
-﻿
+
 CLI for Microsoft 365 v11.8.0
 Manage Microsoft 365 and SharePoint Framework projects on any platform 
 
@@ -13,4 +13,3 @@ Commands groups:
   cli app *         2 commands
   cli completion *  5 commands
   cli config *      4 commands
-

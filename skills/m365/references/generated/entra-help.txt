@@ -1,4 +1,4 @@
-﻿
+
 CLI for Microsoft 365 v11.8.0
 Manage Microsoft 365 and SharePoint Framework projects on any platform 
 
@@ -25,4 +25,3 @@ Commands groups:
   entra siteclassification *    4 commands
   entra sp *                    4 commands
   entra user *                  19 commands
-

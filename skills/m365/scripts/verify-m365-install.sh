@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+: "${NO_UPDATE_NOTIFIER:=1}"
+export NO_UPDATE_NOTIFIER
+
 failed=0
 
 run_check() {
@@ -16,9 +19,8 @@ run_check() {
 
 run_check "node" node --version
 run_check "npm" npm --version
-run_check "m365 version" m365 version
-run_check "m365 status" m365 status
-run_check "m365 help" m365 --help
+run_check "m365 version" m365 version --output text
+run_check "m365 status" m365 status --output text
+run_check "m365 help" bash -lc 'm365 --help | awk "NF{print; exit}"'
 
 exit "$failed"
-

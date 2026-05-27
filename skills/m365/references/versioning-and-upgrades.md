@@ -5,7 +5,7 @@ Use this reference before changing installed CLI versions or updating generated 
 ## Version Check
 
 ```bash
-m365 version
+m365 version --output text
 npm list -g @pnp/cli-microsoft365 --depth=0
 ```
 
@@ -18,6 +18,8 @@ Record the CLI version when capturing command help snapshots.
 - Re-run safe verification commands after upgrade.
 - Refresh command-surface references from `m365 --help` and group help.
 - Re-check commands that use `--query` because response shapes can change.
+- In non-interactive Windows or sandboxed environments, set `NO_UPDATE_NOTIFIER=1` before collecting snapshots so
+  update checks do not pollute generated output.
 
 ## Documentation Drift
 

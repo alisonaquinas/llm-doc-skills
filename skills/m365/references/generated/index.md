@@ -1,6 +1,6 @@
-﻿# Generated m365 Help Snapshot
+# Generated m365 Help Snapshot
 
-- Version: "v11.8.0"
+- Version: v11.8.0
 - Generated: 2026-05-27
 
 - `adaptivecard` -> `references/generated/adaptivecard-help.txt`

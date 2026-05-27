@@ -28,5 +28,8 @@ Focused checks:
 ```bash
 python scripts/lint_skills.py m365
 python scripts/validate_skills.py m365
-powershell -File skills/m365/scripts/verify-m365-install.ps1
+pwsh -NoProfile -File skills/m365/scripts/verify-m365-install.ps1
 ```
+
+On Windows, prefer `pwsh -NoProfile` for the bundled PowerShell helpers so profile customizations do not pollute the
+verification output. Use `powershell -NoProfile` only as a fallback.

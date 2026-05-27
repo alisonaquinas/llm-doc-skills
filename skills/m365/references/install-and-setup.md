@@ -26,13 +26,17 @@ These checks do not call tenant APIs:
 ```bash
 node --version
 npm --version
-m365 version
-m365 status
+m365 version --output text
+m365 status --output text
 m365 --help
 m365 docs --output text
 ```
 
 Expected unauthenticated status is `Logged out`.
+
+On Windows, prefer `pwsh -NoProfile -File` when running the bundled PowerShell helper scripts so a user profile does not
+add unrelated output to the verification step. If sandboxed or shared environments print update-check warnings, set
+`NO_UPDATE_NOTIFIER=1` before running `m365`.
 
 ## Setup Wizard
 
@@ -44,8 +48,10 @@ Useful configuration checks:
 
 ```bash
 m365 cli config list
-m365 cli doctor
 ```
+
+`m365 cli doctor` is useful after login or when diagnosing an authenticated environment. It is not a reliable
+pre-login verification step because it can fail while logged out.
 
 ## Runtime Options
 
