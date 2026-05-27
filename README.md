@@ -12,6 +12,7 @@ OOXML workflows plus wrappers for text-first publishing tools.
 | Skill | Formats | Use When |
 | --- | --- | --- |
 | [office-custom](skills/office-custom/SKILL.md) | `.docx`, `.pptx`, `.xlsx` | Unpack, repack, validate, or convert OOXML files |
+| [m365](skills/m365/SKILL.md) | Microsoft 365, SharePoint, SPFx | Use CLI for Microsoft 365 to inspect and automate document libraries, pages, files, tenant metadata, and CI/CD workflows |
 | [docx-custom](skills/docx-custom/SKILL.md) | `.docx` | Create or edit Word documents, tracked changes, tables, and comments |
 | [pdf-custom](skills/pdf-custom/SKILL.md) | `.pdf` | Merge, split, extract, OCR, form filling, and PDF generation |
 | [pptx-custom](skills/pptx-custom/SKILL.md) | `.pptx` | Build or edit presentations with visual QA |
@@ -68,6 +69,8 @@ cat skills/asciidoc/SKILL.md
 These reference files are bundled and linked from the skills:
 
 - [pdf-custom/FORMS.md](skills/pdf-custom/FORMS.md) for AcroForm workflows
+- [m365/references/command-surface.md](skills/m365/references/command-surface.md) for CLI for Microsoft 365 command routing
+- [m365/references/authentication-and-permissions.md](skills/m365/references/authentication-and-permissions.md) for m365 auth and permission guardrails
 - [pdf-custom/REFERENCE.md](skills/pdf-custom/REFERENCE.md) for advanced PDF patterns
 - [pptx-custom/editing.md](skills/pptx-custom/editing.md) for unpack/edit/repack flows
 - [pptx-custom/pptxgenjs.md](skills/pptx-custom/pptxgenjs.md) for generated decks

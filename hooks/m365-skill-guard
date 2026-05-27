@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Non-blocking guard for m365 skill edits.
+
+set -euo pipefail
+
+target="${CLAUDE_TOOL_RESULT_FILE_PATH:-}"
+
+case "$target" in
+  *skills/m365/*|*skills\\m365\\*) ;;
+  *) exit 0 ;;
+esac
+
+if [ ! -f "$target" ]; then
+  exit 0
+fi
+
+if grep -Eiq '(client_secret|access_token|refresh_token|certificateBase64Encoded)[[:space:]]*[:=][[:space:]]*["'\'']?[A-Za-z0-9_./+=-]{12,}' "$target"; then
+  echo "m365-skill-guard: possible credential-like value in $target" >&2
+fi
+
+exit 0

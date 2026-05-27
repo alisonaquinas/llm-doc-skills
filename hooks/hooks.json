@@ -21,6 +21,15 @@
             "command": "bash -c 'f=\"${CLAUDE_TOOL_RESULT_FILE_PATH:-}\"; [[ \"$f\" == *.canvas ]] && python -c \"import json,sys; json.load(open(sys.argv[1]))\" \"$f\" && echo \"canvas JSON valid: $f\" || true'"
           }
         ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.cmd\" m365-skill-guard"
+          }
+        ]
       }
     ]
   }

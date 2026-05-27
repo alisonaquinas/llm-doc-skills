@@ -1,0 +1,9 @@
+﻿
+CLI for Microsoft 365 v11.8.0
+Manage Microsoft 365 and SharePoint Framework projects on any platform 
+
+Commands groups:
+
+  spe container *      9 commands
+  spe containertype *  4 commands
+

@@ -1,0 +1,22 @@
+﻿
+CLI for Microsoft 365 v11.8.0
+Manage Microsoft 365 and SharePoint Framework projects on any platform 
+
+Commands groups:
+
+  teams app *                6 commands
+  teams cache *              1 command
+  teams callrecord *         2 commands
+  teams channel *            9 commands
+  teams chat *               7 commands
+  teams funsettings *        2 commands
+  teams guestsettings *      2 commands
+  teams meeting *            7 commands
+  teams membersettings *     2 commands
+  teams message *            6 commands
+  teams messagingsettings *  2 commands
+  teams report *             8 commands
+  teams tab *                4 commands
+  teams team *               9 commands
+  teams user *               5 commands
+

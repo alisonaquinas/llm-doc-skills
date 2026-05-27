@@ -1,0 +1,16 @@
+﻿
+CLI for Microsoft 365 v11.8.0
+Manage Microsoft 365 and SharePoint Framework projects on any platform 
+
+Commands groups:
+
+  pp aibuildermodel *  3 commands
+  pp copilot *         3 commands
+  pp dataverse *       5 commands
+  pp environment *     2 commands
+  pp gateway *         2 commands
+  pp managementapp *   2 commands
+  pp solution *        8 commands
+  pp tenant *          2 commands
+  pp website *         1 command
+

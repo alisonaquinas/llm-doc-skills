@@ -1,0 +1,4 @@
+interface:
+  display_name: "m365 Skill"
+  short_description: "Use CLI for Microsoft 365 safely"
+  default_prompt: "Use $m365 to install, configure, inspect, or automate Microsoft 365 document and tenant workflows with CLI for Microsoft 365."

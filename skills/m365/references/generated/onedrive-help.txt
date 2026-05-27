@@ -1,0 +1,12 @@
+﻿
+CLI for Microsoft 365 v11.8.0
+Manage Microsoft 365 and SharePoint Framework projects on any platform 
+
+Commands:
+
+  onedrive list [options]  Retrieves a list of OneDrive sites
+
+Commands groups:
+
+  onedrive report *  7 commands
+

@@ -1,0 +1,47 @@
+﻿
+CLI for Microsoft 365 v11.8.0
+Manage Microsoft 365 and SharePoint Framework projects on any platform 
+
+Commands:
+
+  docs [options]     Returns the CLI for Microsoft 365 docs webpage URL
+  login [options]    Log in to Microsoft 365
+  logout [options]   Log out from Microsoft 365
+  request [options]  Executes the specified web request using CLI for Microsoft 365
+  search [options]   Uses the Microsoft Search to query Microsoft 365 data
+  setup [options]    Sets up CLI for Microsoft 365 based on your preferences
+  status [options]   Shows Microsoft 365 login status
+  version [options]  Shows CLI for Microsoft 365 version
+
+Commands groups:
+
+  adaptivecard *  1 command
+  app *           4 commands
+  booking *       2 commands
+  cli *           14 commands
+  connection *    4 commands
+  context *       5 commands
+  entra *         117 commands
+  exo *           1 command
+  external *      8 commands
+  file *          5 commands
+  flow *          19 commands
+  graph *         16 commands
+  onedrive *      8 commands
+  onenote *       3 commands
+  outlook *       32 commands
+  pa *            13 commands
+  planner *       31 commands
+  pp *            28 commands
+  purview *       21 commands
+  search *        5 commands
+  spe *           13 commands
+  spfx *          9 commands
+  spo *           378 commands
+  spp *           6 commands
+  teams *         72 commands
+  tenant *        24 commands
+  todo *          10 commands
+  util *          1 command
+  viva *          30 commands
+

@@ -1,0 +1,13 @@
+﻿
+CLI for Microsoft 365 v11.8.0
+Manage Microsoft 365 and SharePoint Framework projects on any platform 
+
+Commands groups:
+
+  tenant id *                   1 command
+  tenant info *                 1 command
+  tenant people *               7 commands
+  tenant report *               8 commands
+  tenant security *             1 command
+  tenant serviceannouncement *  6 commands
+

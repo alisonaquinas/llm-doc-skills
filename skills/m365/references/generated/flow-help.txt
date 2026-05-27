@@ -1,0 +1,21 @@
+﻿
+CLI for Microsoft 365 v11.8.0
+Manage Microsoft 365 and SharePoint Framework projects on any platform 
+
+Commands:
+
+  flow disable [options]  Disables specified Microsoft Flow
+  flow enable [options]   Enables specified Microsoft Flow
+  flow export [options]   Exports the specified Microsoft Flow as a file
+  flow get [options]      Gets information about the specified Microsoft Flow
+  flow list [options]     Lists Power Automate flows in the given environment
+  flow remove [options]   Removes the specified Microsoft Flow
+
+Commands groups:
+
+  flow connector *       2 commands
+  flow environment *     2 commands
+  flow owner *           3 commands
+  flow recyclebinitem *  2 commands
+  flow run *             4 commands
+

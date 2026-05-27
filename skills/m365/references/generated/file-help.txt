@@ -1,0 +1,15 @@
+﻿
+CLI for Microsoft 365 v11.8.0
+Manage Microsoft 365 and SharePoint Framework projects on any platform 
+
+Commands:
+
+  file add [options]   Uploads file to the specified site
+  file copy [options]  Copies a file to another location using the Microsoft Graph
+  file list [options]  Retrieves files from the specified folder and site
+  file move [options]  Moves a file to another location using the Microsoft Graph
+
+Commands groups:
+
+  file convert *  1 command
+

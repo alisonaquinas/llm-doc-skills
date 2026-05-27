@@ -1,0 +1,13 @@
+﻿
+CLI for Microsoft 365 v11.8.0
+Manage Microsoft 365 and SharePoint Framework projects on any platform 
+
+Commands groups:
+
+  purview auditlog *            1 command
+  purview retentionevent *      4 commands
+  purview retentioneventtype *  5 commands
+  purview retentionlabel *      5 commands
+  purview sensitivitylabel *    3 commands
+  purview threatassessment *    3 commands
+

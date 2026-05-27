@@ -1,0 +1,34 @@
+﻿# Generated m365 Help Snapshot
+
+- Version: "v11.8.0"
+- Generated: 2026-05-27
+
+- `adaptivecard` -> `references/generated/adaptivecard-help.txt`
+- `app` -> `references/generated/app-help.txt`
+- `booking` -> `references/generated/booking-help.txt`
+- `cli` -> `references/generated/cli-help.txt`
+- `connection` -> `references/generated/connection-help.txt`
+- `context` -> `references/generated/context-help.txt`
+- `entra` -> `references/generated/entra-help.txt`
+- `exo` -> `references/generated/exo-help.txt`
+- `external` -> `references/generated/external-help.txt`
+- `file` -> `references/generated/file-help.txt`
+- `flow` -> `references/generated/flow-help.txt`
+- `graph` -> `references/generated/graph-help.txt`
+- `onedrive` -> `references/generated/onedrive-help.txt`
+- `onenote` -> `references/generated/onenote-help.txt`
+- `outlook` -> `references/generated/outlook-help.txt`
+- `pa` -> `references/generated/pa-help.txt`
+- `planner` -> `references/generated/planner-help.txt`
+- `pp` -> `references/generated/pp-help.txt`
+- `purview` -> `references/generated/purview-help.txt`
+- `search` -> `references/generated/search-help.txt`
+- `spe` -> `references/generated/spe-help.txt`
+- `spfx` -> `references/generated/spfx-help.txt`
+- `spo` -> `references/generated/spo-help.txt`
+- `spp` -> `references/generated/spp-help.txt`
+- `teams` -> `references/generated/teams-help.txt`
+- `tenant` -> `references/generated/tenant-help.txt`
+- `todo` -> `references/generated/todo-help.txt`
+- `util` -> `references/generated/util-help.txt`
+- `viva` -> `references/generated/viva-help.txt`

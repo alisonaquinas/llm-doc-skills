@@ -1,0 +1,16 @@
+﻿
+CLI for Microsoft 365 v11.8.0
+Manage Microsoft 365 and SharePoint Framework projects on any platform 
+
+Commands groups:
+
+  outlook calendar *       4 commands
+  outlook calendargroup *  4 commands
+  outlook event *          3 commands
+  outlook mail *           2 commands
+  outlook mailbox *        2 commands
+  outlook message *        4 commands
+  outlook report *         11 commands
+  outlook room *           1 command
+  outlook roomlist *       1 command
+

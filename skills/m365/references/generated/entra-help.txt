@@ -1,0 +1,28 @@
+﻿
+CLI for Microsoft 365 v11.8.0
+Manage Microsoft 365 and SharePoint Framework projects on any platform 
+
+Commands groups:
+
+  entra administrativeunit *    9 commands
+  entra app *                   11 commands
+  entra approleassignment *     3 commands
+  entra enterpriseapp *         4 commands
+  entra group *                 9 commands
+  entra groupsetting *          5 commands
+  entra groupsettingtemplate *  2 commands
+  entra license *               1 command
+  entra m365group *             22 commands
+  entra multitenant *           4 commands
+  entra oauth2grant *           4 commands
+  entra organization *          2 commands
+  entra pim *                   5 commands
+  entra policy *                1 command
+  entra resourcenamespace *     1 command
+  entra roleassignment *        1 command
+  entra roledefinition *        5 commands
+  entra rolepermission *        1 command
+  entra siteclassification *    4 commands
+  entra sp *                    4 commands
+  entra user *                  19 commands
+

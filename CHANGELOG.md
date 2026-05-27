@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added `m365` skill for CLI for Microsoft 365 document-library, SharePoint, SPFx, tenant-inspection, CI/CD, and MCP-server workflows.
+- Added `agents/m365-maintainer.md`, `commands/m365-quality-gate.md`, and a non-blocking m365 skill edit guard hook.
+
 ## [1.3.2] - 2026-05-15
 
 ### Added

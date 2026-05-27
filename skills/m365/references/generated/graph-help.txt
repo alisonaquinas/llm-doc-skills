@@ -1,0 +1,12 @@
+﻿
+CLI for Microsoft 365 v11.8.0
+Manage Microsoft 365 and SharePoint Framework projects on any platform 
+
+Commands groups:
+
+  graph changelog *           1 command
+  graph directoryextension *  4 commands
+  graph openextension *       5 commands
+  graph schemaextension *     5 commands
+  graph subscription *        1 command
+

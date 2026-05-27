@@ -1,0 +1,62 @@
+﻿
+SEARCH
+======
+
+Uses the Microsoft Search to query Microsoft 365 data
+
+
+USAGE
+
+  m365 search [options]
+
+
+
+OPTIONS
+
+  -q, --queryText [queryText]
+    Query to be executed in Keyword Query Language (KQL) format.
+
+  -s, --scopes <scopes>
+    Comma-separated list of scopes for the search request. Allowed values are chatMessage, message, event, drive, driveItem, list, listItem, site, bookmark, acronym, or person.
+
+  --startIndex [startIndex]
+    Set the number that indicates the 0-based starting point to list search results on the page. The default value is 0.
+
+  --pageSize [pageSize]
+    Set the number that indicates the number of results to be returned for a page. The default is 25 results. The maximum is 500 results.
+
+  --allResults
+    Set to get all search results from all pages.
+
+  --resultsOnly
+    Set to get only the results form the query response.
+
+  --enableTopResults
+    Use to get the first three messages in the response are sorted by relevance. Use this option only when scopes is set to message type.
+
+  --select [select]
+    Comma-separated list of properties to return in the search results.
+
+  --sortBy [sortBy]
+    Comma-separated list of properties to sort search results.
+
+  --enableSpellingSuggestion
+    Set to get the suggested spelling correction information for typos in the user query.
+
+  --enableSpellingModification
+    Set to get the search results for the corrected query when there are no results for the original query with typos, and get the corresponding correction information.
+
+  -h, --help [help]
+    Output usage information. Optionally, specify which section of command's help you want to see. Allowed values are options, examples, remarks, permissions, response, full. Default is options.
+
+  --query [query]
+    JMESPath query string. See http://jmespath.org/ for more information and examples.
+
+  -o, --output [output]
+    Output type. json, text, csv, md, none. Default json.
+
+  --verbose
+    Runs command with verbose logging.
+
+  --debug
+    Runs command with debug logging.

@@ -1,0 +1,11 @@
+﻿
+CLI for Microsoft 365 v11.8.0
+Manage Microsoft 365 and SharePoint Framework projects on any platform 
+
+Commands:
+
+  connection list [options]    Show the list of available connections
+  connection remove [options]  Remove the specified connection
+  connection set [options]     Rename the specified connection
+  connection use [options]     Activate the specified Microsoft 365 tenant connection
+

@@ -1,0 +1,13 @@
+﻿
+CLI for Microsoft 365 v11.8.0
+Manage Microsoft 365 and SharePoint Framework projects on any platform 
+
+Commands:
+
+  app get [options]   Retrieves information about the current Microsoft Entra app
+  app open [options]  Opens Microsoft Entra app in the Microsoft Entra ID portal
+
+Commands groups:
+
+  app permission *  2 commands
+
