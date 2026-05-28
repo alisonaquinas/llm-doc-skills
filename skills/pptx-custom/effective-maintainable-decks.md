@@ -13,8 +13,9 @@ artboards.
   possible.
 - Structure: sections, slide titles, layouts, and placeholders define the
   content architecture.
-- Style: theme colors, theme fonts, masters, and layouts carry recurring design
-  decisions.
+- Style: slide masters, layouts, theme colors, theme fonts, and backgrounds carry
+  recurring design decisions so colors, backgrounds, and layout geometry do not
+  need to be set manually on each slide.
 - Objects: text, shapes, icons, charts, tables, media, notes, and comments stay
   native and semantically meaningful when future editing is expected.
 - Operations: collaboration, review, export, and archive practices preserve one
@@ -44,6 +45,9 @@ export.
   templates and PDF, video, or images as downstream exports only.
 - When a template exists, preserve its slide master, theme, layouts, and
   placeholders. Reapply or reset layouts before resorting to local overrides.
+- Use slide masters and themes as the repeatability layer. Define backgrounds,
+  colors, font roles, logos, page furniture, and common layouts there instead of
+  hand-formatting each slide.
 - Prefer one primary slide master and a limited set of useful layouts: title,
   section divider, title-plus-content, comparison, picture-with-caption,
   dashboard, timeline/process, summary, and appendix.
@@ -115,11 +119,34 @@ export.
   decorative where the target tool supports it.
 - Text and meaningful non-text elements need sufficient contrast. Do not rely on
   color alone to encode categories, status, or sequence.
-- Body text should usually be 18 pt or larger for presentation decks; dense
-  reference slides belong in appendix or notes.
+- Use large, readable type. Keep all visible text at 12 pt or larger as an
+  absolute floor, and use 18 pt or larger for normal body text in presentation
+  slides. Dense reference material belongs in appendix or notes.
 - Use simple, readable sans-serif fonts for broad accessibility and compatibility.
 - Re-run accessibility and visual checks after localization, template changes, or
   major object movement.
+
+## Review Contact Sheets
+
+Generate contact sheets of the slide deck during review, iteration, and
+improvement. A contact sheet makes the whole sequence visible at once, which is
+especially useful for judging whether slides are effective as a narrative rather
+than merely valid as individual pages.
+
+```bash
+python pptx-custom/scripts/thumbnail.py deck.pptx deck-contact-sheet.jpg --cols 4 --dpi 120
+```
+
+- Generate a contact sheet after the first complete draft and after meaningful
+  revisions.
+- Use the contact sheet to evaluate slide order, visual rhythm, repeated layout
+  patterns, title clarity, density, contrast, and whether each slide's main point
+  is legible at a glance.
+- Pair contact-sheet review with full-size slide rendering. Contact sheets catch
+  story, consistency, and pacing problems; full-size renders catch overflow,
+  small type, crop problems, and fine alignment issues.
+- Iterate visibly: mark weak slides, revise them, regenerate the contact sheet,
+  and compare before/after.
 
 ## Agent Checklist
 
@@ -128,11 +155,17 @@ Before creating or handing off a deck:
 - Does each slide have one clear takeaway and a useful title?
 - Are recurring structures built from layouts, placeholders, theme colors, and
   native objects rather than manual formatting?
+- Are slide masters and themes carrying repeatable colors, backgrounds, and
+  layouts instead of per-slide manual styling?
 - Are charts, tables, diagrams, and text editable where future maintenance is
   likely?
 - Are screenshots limited to fixed external evidence?
+- Is every visible text element at least 12 pt, with normal presentation body
+  text usually 18 pt or larger?
 - Is the working file a `.pptx`, with `.potx` reserved for templates and PDF or
   video reserved for exports?
 - Are fonts, media, linked assets, and target-client limitations accounted for?
 - Have visual QA, text extraction, accessibility checks, and target-environment
   checks been run where practical?
+- Has a contact sheet been generated and used to review slide effectiveness,
+  sequence, density, and visual consistency?
