@@ -263,8 +263,7 @@ ls -1 "$PWD"/slide-*.jpg
 
 The PptxGenJS and python-pptx API quick lookups have moved to
 [`api-reference.md`](api-reference.md) to keep this file scannable. Load
-that file when you need property tables, option blocks, or constructor
-signatures.
+that file for property tables, option blocks, and constructor signatures.
 
 ---
 
