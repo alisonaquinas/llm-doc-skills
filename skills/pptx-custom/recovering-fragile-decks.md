@@ -44,6 +44,78 @@ python pptx-custom/scripts/check_fragility.py deck.pptx
 # exits 0 only when no signals are found
 ```
 
+### Machine-readable output (`--json`)
+
+For automation, pass `--json` and pipe through `jq`. The script always
+emits a JSON array (one entry per file passed on the command line),
+each entry shaped like this:
+
+```json
+[
+  {
+    "path": "deck.pptx",
+    "worst": "fail",
+    "summary": {
+      "application": "Microsoft Macintosh PowerPoint",
+      "creator": "Walnut Exporter",
+      "declared_slides": 12,
+      "declared_notes": 12,
+      "actual_slides": 12,
+      "actual_notes": 12,
+      "media_files": 19,
+      "unique_media_blobs": 4,
+      "duplicate_media_wasted_bytes": 1344109,
+      "inline_xmlns_per_slide": {
+        "ppt/slides/slide1.xml": 271
+      },
+      "rel_ids_canonical": 0,
+      "rel_ids_random_hex": 92
+    },
+    "findings": [
+      {
+        "code": "creator-fragile",
+        "severity": "fail",
+        "message": "docProps/core.xml dc:creator = 'Walnut Exporter' …",
+        "details": { "creator": "Walnut Exporter" }
+      }
+    ]
+  }
+]
+```
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `path` | string | The file argument exactly as passed on the CLI. |
+| `worst` | `"info"` \| `"warn"` \| `"fail"` | Highest severity across all findings. `"info"` only appears when there are zero findings. |
+| `summary.application` | string | `docProps/app.xml` Application value, if present. |
+| `summary.creator` | string | `docProps/core.xml` `dc:creator`, only present when the value matches a known-fragile producer. |
+| `summary.declared_slides` / `summary.declared_notes` | int \| null | What `app.xml` claims. `null` when the field is absent. |
+| `summary.actual_slides` / `summary.actual_notes` | int | Counted from the zip member list. |
+| `summary.media_files` | int | Files under `ppt/media/`. |
+| `summary.unique_media_blobs` | int | Distinct SHA-256 hashes across the media files. |
+| `summary.duplicate_media_wasted_bytes` | int | Bytes that would be saved if media were deduplicated. |
+| `summary.inline_xmlns_per_slide` | object | Per-slide count of `xmlns:*` attributes (root + inline). |
+| `summary.rel_ids_canonical` / `summary.rel_ids_random_hex` | int | Relationship-ID style counts. |
+| `findings[].code` | string | Stable identifier (`exporter-fragile`, `creator-fragile`, `image-duplication`, `inline-xmlns-spam`, `content-types-default-xml`, `slideLayout1-missing`, `theme-misplaced`, `rel-id-random-hex`, `empty-xfrm`, `app-slide-mismatch`, `app-notes-mismatch`, `app-missing`, `content-types-missing`, `bad-zip`). |
+| `findings[].severity` | `"info"` \| `"warn"` \| `"fail"` | Per-finding severity. |
+| `findings[].message` | string | Human-readable description. |
+| `findings[].details` | object | Code-specific context (path lists, counts, etc.). |
+
+Useful one-liners:
+
+```bash
+# Worst severity for a single deck (prints info / warn / fail).
+python pptx-custom/scripts/check_fragility.py --json deck.pptx | jq -r '.[0].worst'
+
+# List the finding codes that fired.
+python pptx-custom/scripts/check_fragility.py --json deck.pptx \
+    | jq -r '.[0].findings[].code'
+
+# Filter a batch to only fail-level decks.
+python pptx-custom/scripts/check_fragility.py --json deck*.pptx \
+    | jq -r '.[] | select(.worst=="fail") | .path'
+```
+
 ## Decision flow
 
 ```dot
