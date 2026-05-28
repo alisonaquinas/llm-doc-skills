@@ -100,7 +100,19 @@ Uses the existing `office-custom/scripts/soffice.py` wrapper:
 python office-custom/scripts/soffice.py --headless \
     --convert-to pptx --outdir canonical/ deck.pptx
 
-# Verify the result.
+# REQUIRED: verify the canonical file was actually produced.
+# soffice can exit 0 and print "Unspecified Application Error" on
+# severely malformed XML (e.g. duplicate attribute names on the same
+# element) without producing any output file. If the output is missing,
+# fall back to Path A1 — PowerPoint Desktop's parser is more tolerant
+# than LibreOffice's on the malformed-but-still-parseable-in-Office
+# corner cases.
+test -f canonical/deck.pptx || {
+    echo "soffice produced no output — fall back to PowerPoint Desktop (Path A1)."
+    exit 1
+}
+
+# Now verify the canonicalized file.
 python pptx-custom/scripts/check_fragility.py canonical/deck.pptx
 python office-custom/scripts/validate.py canonical/deck.pptx
 ```
@@ -111,6 +123,25 @@ rewrites relationship IDs to canonical `rIdN`, and fills in
 original (font fallbacks, exotic gradients, and some chart features can
 shift), so always run a visual QA pass afterwards — see
 [`SKILL.md`](SKILL.md) §`QA (Required)`.
+
+#### When LibreOffice refuses the file
+
+`soffice` rejects decks whose XML is not well-formed (the same parent
+element carries two attributes with the same name; an element name is
+malformed; the package is truncated). The skill's `check_fragility.py`
+will still parse and rate these because it works on byte-level regex,
+not a full XML parser — so a deck can score "fragile but salvageable"
+with `check_fragility.py` and yet be unsalvageable through LibreOffice.
+
+Recovery options in this case, in order of preference:
+
+1. **PowerPoint Desktop Save As** (Path A1) — Office's parser is the most
+   tolerant in practice; it routinely repairs files LibreOffice rejects.
+2. **Use the `… - Repaired.pptx` companion** (Path C) — if PowerPoint
+   has already produced one, that file is canonical and safe to edit
+   with the standard [`editing.md`](editing.md) flow.
+3. **Surgical byte-level patch** (Path B below) — when the goal is a
+   small targeted edit and full canonicalization is not required.
 
 After either A1 or A2, edit the canonical copy with the regular
 [`editing.md`](editing.md) workflow.
