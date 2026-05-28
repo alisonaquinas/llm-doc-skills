@@ -17,16 +17,20 @@ python pptx-custom/scripts/check_fragility.py presentation.pptx
 ```
 
 The script exits 0 when no signals are found and 1 when any signal is
-found. The `--json` form (`--json | jq '.[0].worst'`) reports `info`,
-`warn`, or `fail` so the triage below can be automated.
+found. The `--json` form (`--json | jq '.[0].worst'`) reports one of
+`info`, `warn`, or `fail` so the triage below can be automated. When
+the `findings` array is empty (no signals at all) `worst` stays at its
+default value of `"info"` — the same value used for individual
+informational findings, so always pair a `worst` check with a
+`findings` length or exit-code check when scripting.
 
-### Triage by worst severity
+### Triage by exit code and worst severity
 
-| Worst severity | What this means | What to do |
-| --- | --- | --- |
-| (none / exit 0) | No fragility signals — package looks like real Office output. | Continue with the **Preferred workflow** below. `python-pptx` full-save and `pack.py` ElementTree round-trips are safe. |
-| `warn` only | Producer is unrecognized OR there are mild structural smells (random-hex rel IDs, misplaced theme, empty `<a:xfrm/>`, dc:creator-only signature, slide/notes mismatch), but the file is still well-formed enough for tolerant tooling. | Surgical byte-level edits via `patch_slide_xml.py` are safe. **Do not** run `python-pptx`'s save or `pack.py`'s ElementTree round-trip — both will normalize the XML declaration and can push the file across the validator threshold. Read [`recovering-fragile-decks.md`](recovering-fragile-decks.md) §Path B. |
-| `fail` (any) | Hard signals of a fragile producer (Walnut Exporter / Aspose / Syncfusion / Spire / GemBox / OpenXML-SDK pipeline) or a structural bug PowerPoint Online's validator will reject (`Default Extension="xml"` core-properties, image-dup ratio >5×, inline-xmlns spam >150 per slide). | Canonicalize **first** via [`recovering-fragile-decks.md`](recovering-fragile-decks.md) §Path A (PowerPoint Desktop Save As, or LibreOffice `--convert-to pptx`). Edit the canonical copy with the Preferred workflow below. Do not edit the fragile original through any normalizing tool. |
+| Exit | `worst` value | What this means | What to do |
+| --- | --- | --- | --- |
+| `0` | `"info"`, `findings == []` | No fragility signals — package looks like real Office output. | Continue with the **Preferred workflow** below. `python-pptx` full-save and `pack.py` ElementTree round-trips are safe. |
+| `1` | `"warn"` | Producer is unrecognized OR there are mild structural smells (random-hex rel IDs, misplaced theme, empty `<a:xfrm/>`, dc:creator-only signature, slide/notes mismatch), but the file is still well-formed enough for tolerant tooling. | Surgical byte-level edits via `patch_slide_xml.py` are safe. **Do not** run `python-pptx`'s save or `pack.py`'s ElementTree round-trip — both will normalize the XML declaration and can push the file across the validator threshold. Read [`recovering-fragile-decks.md`](recovering-fragile-decks.md) §Path B. |
+| `1` | `"fail"` | Hard signals of a fragile producer (Walnut Exporter / Aspose / Syncfusion / Spire / GemBox / OpenXML-SDK pipeline) or a structural bug PowerPoint Online's validator will reject (`Default Extension="xml"` core-properties, image-dup ratio >5×, inline-xmlns spam >150 per slide). | Canonicalize **first** via [`recovering-fragile-decks.md`](recovering-fragile-decks.md) §Path A (PowerPoint Desktop Save As, or LibreOffice `--convert-to pptx`). Edit the canonical copy with the Preferred workflow below. Do not edit the fragile original through any normalizing tool. |
 
 When in doubt, treat the file as fragile. The fragile-deck recovery flow is
 also safe on healthy decks; the inverse is not true.

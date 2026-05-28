@@ -86,7 +86,7 @@ each entry shaped like this:
 | Field | Type | Meaning |
 | --- | --- | --- |
 | `path` | string | The file argument exactly as passed on the CLI. |
-| `worst` | `"info"` \| `"warn"` \| `"fail"` | Highest severity across all findings. `"info"` only appears when there are zero findings. |
+| `worst` | `"info"` \| `"warn"` \| `"fail"` | Highest severity across all findings. Stays at the default `"info"` when `findings` is empty (no signals) — pair with a length check or with the process exit code (0 = clean, 1 = any finding) to disambiguate. |
 | `summary.application` | string | `docProps/app.xml` Application value, if present. |
 | `summary.creator` | string | `docProps/core.xml` `dc:creator`, only present when the value matches a known-fragile producer. |
 | `summary.declared_slides` / `summary.declared_notes` | int \| null | What `app.xml` claims. `null` when the field is absent. |
