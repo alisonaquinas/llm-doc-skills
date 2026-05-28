@@ -16,11 +16,17 @@ template deck that must keep its current theme, layouts, and slide masters.
 python pptx-custom/scripts/check_fragility.py presentation.pptx
 ```
 
-| Exit | Meaning | What to do |
+The script exits 0 when no signals are found and 1 when any signal is
+found. The `--json` form (`--json | jq '.[0].worst'`) reports `info`,
+`warn`, or `fail` so the triage below can be automated.
+
+### Triage by worst severity
+
+| Worst severity | What this means | What to do |
 | --- | --- | --- |
-| `0` | No fragility signals | Continue with the workflow below. |
-| `1` (warn only) | Mild signals — file is still fragile under a normalizing save | Prefer the recovery flow; if you must edit in place, use the surgical path in [`recovering-fragile-decks.md`](recovering-fragile-decks.md). |
-| `1` (any fail) | File will almost certainly break under a python-pptx full-save or an ElementTree re-serialization | Switch to [`recovering-fragile-decks.md`](recovering-fragile-decks.md). |
+| (none / exit 0) | No fragility signals — package looks like real Office output. | Continue with the **Preferred workflow** below. `python-pptx` full-save and `pack.py` ElementTree round-trips are safe. |
+| `warn` only | Producer is unrecognized OR there are mild structural smells (random-hex rel IDs, misplaced theme, empty `<a:xfrm/>`, dc:creator-only signature, slide/notes mismatch), but the file is still well-formed enough for tolerant tooling. | Surgical byte-level edits via `patch_slide_xml.py` are safe. **Do not** run `python-pptx`'s save or `pack.py`'s ElementTree round-trip — both will normalize the XML declaration and can push the file across the validator threshold. Read [`recovering-fragile-decks.md`](recovering-fragile-decks.md) §Path B. |
+| `fail` (any) | Hard signals of a fragile producer (Walnut Exporter / Aspose / Syncfusion / Spire / GemBox / OpenXML-SDK pipeline) or a structural bug PowerPoint Online's validator will reject (`Default Extension="xml"` core-properties, image-dup ratio >5×, inline-xmlns spam >150 per slide). | Canonicalize **first** via [`recovering-fragile-decks.md`](recovering-fragile-decks.md) §Path A (PowerPoint Desktop Save As, or LibreOffice `--convert-to pptx`). Edit the canonical copy with the Preferred workflow below. Do not edit the fragile original through any normalizing tool. |
 
 When in doubt, treat the file as fragile. The fragile-deck recovery flow is
 also safe on healthy decks; the inverse is not true.
