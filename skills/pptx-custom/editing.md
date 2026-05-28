@@ -76,6 +76,21 @@ script reports no errors.
 - Be cautious with placeholder geometry. Theme and layout files affect many
   slides at once.
 
+## Maintainability-preserving edits
+
+- Preserve the existing slide masters, layouts, theme colors, theme fonts, and
+  placeholders unless the requested change explicitly requires template surgery.
+- Use existing title and content placeholders where possible. Avoid replacing
+  placeholder-backed content with free-floating text boxes during routine edits.
+- Keep charts, tables, diagrams, and text native and editable when future
+  maintenance is likely. Avoid flattening editable content into screenshots.
+- Preserve speaker notes, comments, and review metadata unless the user asks for
+  a clean delivery copy.
+- Re-check reading order, unique slide titles, alt text, and contrast after any
+  object movement, grouping, or layout-level edit.
+- Audit fonts and linked media before handoff; package or embed critical assets
+  when the deck must travel outside the original workspace.
+
 ## Tool-choice rules
 
 | Operation | Safe on healthy decks? | Safe on fragile decks? |

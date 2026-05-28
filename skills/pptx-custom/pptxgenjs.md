@@ -48,6 +48,25 @@ pptx.writeFile({ fileName: "project-update.pptx" });
 - Keep text boxes generous enough to survive font substitution on other
   systems.
 - Prefer a few intentional layout motifs over repeating plain bullet slides.
+- Read [`effective-maintainable-decks.md`](effective-maintainable-decks.md)
+  before generating a deck that must be edited, reused, co-authored, or opened
+  reliably in Microsoft Office.
+
+## Maintainability defaults
+
+- Treat the generated `.pptx` as the editable source. Keep PDF, video, and image
+  exports downstream from that source.
+- Use familiar system fonts unless a supplied template or brand requirement says
+  otherwise.
+- Prefer native text, shapes, icons, charts, and tables over flattened images
+  when content may be updated later.
+- Give every slide one clear takeaway and a unique, useful title.
+- Put presenter detail in notes with `slide.addNotes(...)` instead of crowding
+  the visible slide.
+- Keep components simple enough for PowerPoint desktop, PowerPoint for the web,
+  and common import targets to preserve editability.
+- Switch to template/XML editing when true slide masters, placeholder reuse, or
+  exact brand-template preservation matters more than scratch generation speed.
 
 ## Useful building blocks
 

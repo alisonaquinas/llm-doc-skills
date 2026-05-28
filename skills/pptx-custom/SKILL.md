@@ -17,10 +17,12 @@ Load sections based on the task:
   canonicalization and byte-level surgical-patch workflows. Required whenever
   the file was produced by Walnut Exporter, Aspose, Syncfusion, Spire, GemBox,
   OpenXML SDK pipelines, or any non-Office producer.
-- **Create from scratch** → Read [pptxgenjs.md](pptxgenjs.md) for color
-  palettes, typography, and design principles; use the PptxGenJS library
+- **Create from scratch** → Read [pptxgenjs.md](pptxgenjs.md) for generation
+  mechanics and [effective-maintainable-decks.md](effective-maintainable-decks.md)
+  for editable, reusable, Office-compatible deck guidance; use the PptxGenJS
+  library
 - **Extract/analyze content** → Use markitdown or thumbnail.py from "Reading Content"
-- **Design guidance** → "Design Ideas" section for color palettes, typography, spacing, and anti-patterns
+- **Design guidance** → "Design Ideas" section for color palettes, typography, spacing, and anti-patterns; use [effective-maintainable-decks.md](effective-maintainable-decks.md) when maintainability, reuse, or MS Office compatibility matters
 - **Visual QA** → "QA (Required)" section for converting to images and inspection workflow
 - **Converting to images** → "Converting to Images" section for pdftoppm workflow
 
@@ -34,6 +36,7 @@ Load sections based on the task:
 | Recover a Walnut / non-Office deck | Read [recovering-fragile-decks.md](recovering-fragile-decks.md) |
 | Surgical byte-level edit | `python pptx-custom/scripts/patch_slide_xml.py …` |
 | Create from scratch | Read [pptxgenjs.md](pptxgenjs.md) |
+| Make a deck editable and Office-compatible | Read [effective-maintainable-decks.md](effective-maintainable-decks.md) |
 
 ---
 
@@ -69,7 +72,9 @@ python office-custom/scripts/unpack.py presentation.pptx unpacked/
 
 ## Creating from Scratch
 
-**Read [pptxgenjs.md](pptxgenjs.md) for full details.**
+**Read [pptxgenjs.md](pptxgenjs.md) for full details.** For client-facing,
+collaborative, or reusable decks, also read
+[effective-maintainable-decks.md](effective-maintainable-decks.md).
 
 Use when no template or reference presentation is available.
 
@@ -209,6 +214,14 @@ Look for:
 - Low-contrast icons (e.g., dark icons on dark backgrounds without a contrasting circle)
 - Text boxes too narrow causing excessive wrapping
 - Leftover placeholder content
+- Flattened screenshots where editable text, charts, tables, or native diagrams
+  are expected
+- Missing unique slide titles, inaccessible reading order, or missing alt text on
+  meaningful visuals
+- Template drift: recurring content rebuilt as local formatting instead of using
+  masters, layouts, placeholders, theme colors, and native PowerPoint objects
+- Office compatibility risks such as unsupported fonts, unmanaged linked media,
+  complex SmartArt, macros, OLE/ActiveX objects, or brittle animation trees
 
 For each slide, list issues or areas of concern, even if minor.
 
@@ -274,6 +287,8 @@ that file for property tables, option blocks, and constructor signatures.
   detection, canonicalization, and byte-level surgical patching for decks
   produced by Walnut Exporter and other non-Office tools.
 - [`pptxgenjs.md`](pptxgenjs.md) — creating new decks from scratch.
+- [`effective-maintainable-decks.md`](effective-maintainable-decks.md) —
+  effective, editable, reusable, and Office-compatible deck construction.
 - [`api-reference.md`](api-reference.md) — PptxGenJS and python-pptx API
   quick reference.
 - **`$raw-document`** — specification-level reference (OOXML/ODF schemas, namespace tables,
