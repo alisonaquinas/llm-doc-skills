@@ -362,11 +362,17 @@ def _check_slide_layout_numbering(zf: zipfile.ZipFile, report: Report) -> None:
 
 
 def _check_theme_location(zf: zipfile.ZipFile, report: Report) -> None:
+    # Themes belong under ppt/theme/. Walnut and other exporters sometimes
+    # tuck them under a master subtree. The misfiled location is the
+    # discriminator — accept any *.xml under those subtrees (theme1.xml,
+    # theme2.xml, theme.xml, theme_master.xml, …). Real Office output
+    # never places ANY .xml file in these directories, so a permissive
+    # match has no realistic false-positive surface.
     misplaced = [
         n
         for n in zf.namelist()
-        if re.fullmatch(r"ppt/notesMasters/theme/theme\d+\.xml", n)
-        or re.fullmatch(r"ppt/slideMasters/theme/theme\d+\.xml", n)
+        if re.fullmatch(r"ppt/notesMasters/theme/[^/]+\.xml", n)
+        or re.fullmatch(r"ppt/slideMasters/theme/[^/]+\.xml", n)
     ]
     if misplaced:
         report.add(
