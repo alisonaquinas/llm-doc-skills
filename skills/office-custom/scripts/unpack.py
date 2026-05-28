@@ -204,7 +204,7 @@ def unpack(
 
     suffix = source.suffix.lower()
 
-    print(f"Unpacking {source} → {dest}/")
+    print(f"Unpacking {source} -> {dest}/")
 
     with zipfile.ZipFile(source, "r") as zf:
         for name in zf.namelist():

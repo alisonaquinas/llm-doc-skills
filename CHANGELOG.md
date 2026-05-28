@@ -13,6 +13,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `agents/m365-maintainer.md`, `commands/m365-quality-gate.md`, and a non-blocking m365 skill edit guard hook.
 - Added `pptx-custom/effective-maintainable-decks.md` with guidance for effective, editable, reusable, and Microsoft Office-compatible deck construction.
 
+### Changed
+
+- Clarified `pptx-custom` PptxGenJS dependency setup so generated Node scripts use project-local installs or set `NODE_PATH` when relying on global installs.
+
+### Fixed
+
+- Made the LibreOffice wrapper find standard Windows LibreOffice installs and use cross-platform executable discovery instead of Unix-only `which`.
+- Replaced Unicode status arrows in OOXML/PPTX script output with ASCII arrows so Windows console encodings do not crash successful operations.
+- Normalized raw-document schema-validation output paths to forward slashes so strict OOXML tests pass consistently on Windows.
+
 ## [1.3.2] - 2026-05-15
 
 ### Added

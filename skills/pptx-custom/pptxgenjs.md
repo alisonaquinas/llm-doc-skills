@@ -3,6 +3,24 @@
 Use this guide when you are building a new deck from scratch or when the user
 needs a generated presentation with repeatable layout rules.
 
+## Setup check
+
+Prefer a project-local install when writing a Node script that imports
+PptxGenJS:
+
+```bash
+npm install pptxgenjs
+node -e "require('pptxgenjs'); console.log('pptxgenjs ok')"
+```
+
+If PptxGenJS was installed globally, make sure Node can resolve global modules
+before running `require("pptxgenjs")`:
+
+```powershell
+$env:NODE_PATH = npm root -g
+node -e "require('pptxgenjs'); console.log('pptxgenjs ok')"
+```
+
 ## Starting point
 
 ```javascript

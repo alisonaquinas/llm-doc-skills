@@ -185,7 +185,7 @@ def pack(
     )
 
     repair_stats = {"durable_ids": 0, "xml_space": 0}
-    print(f"Packing {unpacked_dir}/ → {output}")
+    print(f"Packing {unpacked_dir}/ -> {output}")
 
     with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         # [Content_Types].xml must be the first entry in an OOXML ZIP.
@@ -273,6 +273,13 @@ def main() -> None:
         default="true",
         choices=["true", "false"],
         help="Run validate.py after packing (default: true)",
+    )
+    parser.add_argument(
+        "--no-validate",
+        dest="validate",
+        action="store_const",
+        const="false",
+        help="Skip validation.",
     )
     args = parser.parse_args()
 

@@ -197,7 +197,7 @@ def patch(
                     _copy_member_raw(src, dst, info)
 
     for member, before, after in patched_summary:
-        print(f"  patched {member}: {before:,} → {after:,} bytes")
+        print(f"  patched {member}: {before:,} -> {after:,} bytes")
     print(f"  written {output_path} ({output_path.stat().st_size:,} bytes)")
 
 

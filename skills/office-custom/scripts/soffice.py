@@ -20,6 +20,7 @@ Usage (mirrors LibreOffice CLI):
 """
 
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -36,6 +37,9 @@ _CANDIDATE_PATHS = [
     "/usr/lib/libreoffice/program/soffice",
     "/opt/libreoffice/program/soffice",
     "/snap/bin/libreoffice",
+    # Windows (winget/MSI default install locations)
+    "C:/Program Files/LibreOffice/program/soffice.exe",
+    "C:/Program Files (x86)/LibreOffice/program/soffice.exe",
 ]
 
 
@@ -55,11 +59,9 @@ def find_soffice() -> str:
 
     # Search PATH first so system-managed installs take priority.
     for candidate in ["soffice", "libreoffice"]:
-        result = subprocess.run(
-            ["which", candidate], capture_output=True, text=True
-        )
-        if result.returncode == 0 and result.stdout.strip():
-            return result.stdout.strip()
+        path = shutil.which(candidate)
+        if path:
+            return path
 
     # Fall back to hard-coded locations.
     for path in _CANDIDATE_PATHS:

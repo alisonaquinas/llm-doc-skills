@@ -266,8 +266,8 @@ def _compose_grid(
 
     Each thumbnail is scaled to *thumb_width* pixels wide (aspect-preserved).
     Thumbnails are laid out left-to-right, top-to-bottom in rows of *cols*
-    columns.  A subtle slide-number label is drawn in the top-left corner of
-    each thumbnail.
+    columns. A slide-number label is drawn in a gutter above each thumbnail so
+    it does not cover slide content.
 
     Args:
         jpeg_paths:  Ordered list of per-slide JPEG paths.
@@ -290,10 +290,12 @@ def _compose_grid(
     tw = thumbs[0].width
     th = thumbs[0].height
 
-    rows    = (len(thumbs) + cols - 1) // cols  # ceiling division
-    padding = 8   # pixels between thumbnails
-    grid_w  = cols * tw + (cols + 1) * padding
-    grid_h  = rows * th + (rows + 1) * padding
+    rows         = (len(thumbs) + cols - 1) // cols  # ceiling division
+    padding      = 8   # pixels between thumbnails
+    label_height = 20  # label gutter above each thumbnail; avoids covering slides
+    tile_h       = label_height + th
+    grid_w       = cols * tw + (cols + 1) * padding
+    grid_h       = rows * tile_h + (rows + 1) * padding
 
     # Create a light-grey canvas.
     grid = Image.new("RGB", (grid_w, grid_h), color=(220, 220, 220))
@@ -309,19 +311,18 @@ def _compose_grid(
         row = idx // cols
         col = idx  % cols
         x   = padding + col * (tw + padding)
-        y   = padding + row * (th + padding)
-        grid.paste(thumb, (x, y))
+        y   = padding + row * (tile_h + padding)
+        grid.paste(thumb, (x, y + label_height))
 
         # Slide number label (1-based).
         label = str(idx + 1)
-        # Semi-transparent dark rectangle behind the label for readability.
-        draw.rectangle([x + 2, y + 2, x + 26, y + 18], fill=(0, 0, 0, 160))
-        draw.text((x + 4, y + 3), label, fill=(255, 255, 255), font=font)
+        draw.rectangle([x, y, x + 30, y + label_height - 2], fill=(0, 0, 0))
+        draw.text((x + 6, y + 3), label, fill=(255, 255, 255), font=font)
 
     grid.save(str(output_path), "JPEG", quality=88)
 
     if not quiet:
-        print(f"  Grid saved: {output_path}  ({cols} cols × {rows} rows, {len(thumbs)} slides)")
+        print(f"  Grid saved: {output_path}  ({cols} cols x {rows} rows, {len(thumbs)} slides)")
 
 
 # ---------------------------------------------------------------------------
@@ -364,7 +365,7 @@ def generate_thumbnails(
         output_path = Path(output_path).resolve()
 
     if not quiet:
-        print(f"Generating thumbnails for {pptx_path.name} …")
+        print(f"Generating thumbnails for {pptx_path.name} ...")
 
     with tempfile.TemporaryDirectory() as tmpdir:
         tmp = Path(tmpdir)

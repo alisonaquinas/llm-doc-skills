@@ -9,22 +9,46 @@ description: "Use this skill any time a .pptx file is involved in any way — as
 
 Load sections based on the task:
 - **Edit existing presentation** → ALWAYS run `scripts/check_fragility.py`
-  first, then read [editing.md](editing.md) for the standard unpack/edit/pack
-  workflow. If the fragility check reports any finding, switch to
-  [recovering-fragile-decks.md](recovering-fragile-decks.md).
+  first, then read `editing.md` for the standard unpack/edit/pack workflow. If
+  the fragility check reports any finding, switch to
+  `recovering-fragile-decks.md`.
 - **Fragile / foreign-exporter deck** → Read
-  [recovering-fragile-decks.md](recovering-fragile-decks.md) for
-  canonicalization and byte-level surgical-patch workflows. Required whenever
-  the file was produced by Walnut Exporter, Aspose, Syncfusion, Spire, GemBox,
-  OpenXML SDK pipelines, or any non-Office producer.
-- **Create from scratch** → Read [pptxgenjs.md](pptxgenjs.md) for generation
-  mechanics and [effective-maintainable-decks.md](effective-maintainable-decks.md)
-  for editable, reusable, Office-compatible deck guidance; use the PptxGenJS
-  library
+  `recovering-fragile-decks.md` for canonicalization and byte-level
+  surgical-patch workflows. Required whenever the file was produced by Walnut
+  Exporter, Aspose, Syncfusion, Spire, GemBox, OpenXML SDK pipelines, or any
+  non-Office producer.
+- **Create from scratch** → Read `pptxgenjs.md` for generation mechanics and
+  `effective-maintainable-decks.md` for editable, reusable, Office-compatible
+  deck guidance; use the PptxGenJS library
 - **Extract/analyze content** → Use markitdown or thumbnail.py from "Reading Content"
-- **Design guidance** → "Design Ideas" section for color palettes, typography, spacing, and anti-patterns; use [effective-maintainable-decks.md](effective-maintainable-decks.md) when maintainability, reuse, or MS Office compatibility matters
+- **Design guidance** → "Design Ideas" section for color palettes, typography,
+  spacing, and anti-patterns; use `effective-maintainable-decks.md` when
+  maintainability, reuse, or MS Office compatibility matters
 - **Visual QA** → "QA (Required)" section for converting to images and inspection workflow
 - **Converting to images** → "Converting to Images" section for pdftoppm workflow
+
+## Quick Start
+
+For any `.pptx` request, first identify whether the file is being read, edited,
+created, or visually checked.
+
+```bash
+# Read slide text and speaker-note content
+python -m markitdown presentation.pptx
+
+# Render a contact sheet for fast visual review
+python pptx-custom/scripts/thumbnail.py presentation.pptx presentation-contact-sheet.jpg --cols 4 --dpi 120
+
+# Check provenance before editing any existing deck
+python pptx-custom/scripts/check_fragility.py presentation.pptx
+```
+
+- For editing, stop after `check_fragility.py` if it reports findings and follow
+  `recovering-fragile-decks.md`; otherwise follow `editing.md`.
+- For new decks, follow `pptxgenjs.md`, then apply
+  `effective-maintainable-decks.md` before QA.
+- For delivery review, run content extraction plus thumbnail/contact-sheet
+  rendering, then complete the QA loop before declaring the deck finished.
 
 ## Quick Reference
 
@@ -266,7 +290,9 @@ ls -1 "$PWD"/slide-*.jpg
 
 - `pip install "markitdown[pptx]"` - text extraction
 - `pip install Pillow` - thumbnail grids
-- `npm install -g pptxgenjs` - creating from scratch
+- `npm install pptxgenjs` - creating from scratch with project-local Node
+  scripts. If installed globally, set `NODE_PATH` to `npm root -g` before
+  running scripts that call `require("pptxgenjs")`.
 - LibreOffice (`soffice`) - PDF conversion (auto-configured for sandboxed environments via `office-custom/scripts/soffice.py`)
 - Poppler (`pdftoppm`) - PDF to images
 

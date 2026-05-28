@@ -60,6 +60,10 @@ def eprint(*args: object) -> None:
     print(*args, file=sys.stderr)
 
 
+def schema_display_path(path: Path) -> str:
+    return path.relative_to(SKILL_DIR).as_posix()
+
+
 def require_lxml() -> None:
     if etree is None:
         raise SystemExit(
@@ -250,9 +254,9 @@ def validate_odf(args: argparse.Namespace) -> int:
         eprint(f"FAIL: could not parse ODF XML: {exc}")
         return 1
     if relaxng.validate(doc):
-        print(f"PASS: ODF XML validates against {schema_path.relative_to(SKILL_DIR)}")
+        print(f"PASS: ODF XML validates against {schema_display_path(schema_path)}")
         return 0
-    eprint(f"FAIL: ODF XML does not validate against {schema_path.relative_to(SKILL_DIR)}")
+    eprint(f"FAIL: ODF XML does not validate against {schema_display_path(schema_path)}")
     for entry in relaxng.error_log:
         eprint(f"  line {entry.line}: {entry.message}")
     return 1
@@ -281,12 +285,12 @@ def validate_ooxml(args: argparse.Namespace) -> int:
         if schema.validate(doc):
             print(
                 "PASS: OOXML XML validates against "
-                f"{schema_path.relative_to(SKILL_DIR)}"
+                f"{schema_display_path(schema_path)}"
             )
             return 0
         eprint(
             "FAIL: OOXML XML does not validate against "
-            f"{schema_path.relative_to(SKILL_DIR)}"
+            f"{schema_display_path(schema_path)}"
         )
         for entry in schema.error_log:
             eprint(f"  line {entry.line}: {entry.message}")

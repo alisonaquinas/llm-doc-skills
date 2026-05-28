@@ -1,6 +1,6 @@
 ---
 name: office-custom
-description: Common utilities for unpacking, editing, repacking, and validating Office Open XML files (.docx, .pptx, .xlsx)
+description: Use when unpacking, editing, repacking, validating, or converting Office Open XML files (.docx, .pptx, .xlsx)
 ---
 
 # Office Open XML Utilities
@@ -11,11 +11,34 @@ XML format that underlies all modern Microsoft Office documents.
 
 ## Intent Router
 
-No separate reference files. All workflows are documented inline below:
+No separate reference files. All workflows are documented inline in this
+`SKILL.md`:
 
 - Unpack/repack an OOXML file → `## Scripts` section (`unpack.py`, `pack.py`)
 - Validate OOXML structure → `## Scripts` section (`validate.py`)
 - Convert to PDF via LibreOffice → `## Scripts` section (`soffice.py`)
+
+## Quick Start
+
+Use these commands from the repo root:
+
+```bash
+# Inspect OOXML package structure
+python office-custom/scripts/validate.py document.docx
+
+# Unpack for XML edits
+python office-custom/scripts/unpack.py presentation.pptx unpacked/ --merge-runs false
+
+# Repack after edits and preserve source ZIP metadata where possible
+python office-custom/scripts/pack.py unpacked/ output.pptx --original presentation.pptx
+
+# Convert to PDF through the LibreOffice wrapper
+python office-custom/scripts/soffice.py --headless --convert-to pdf output.pptx
+```
+
+For fragile `.pptx` files, run `pptx-custom/scripts/check_fragility.py` before
+any unpack/repack or python-pptx save. Some third-party exporters require the
+byte-preserving patch workflow instead of normal OOXML repacking.
 
 ## What Is OOXML?
 
@@ -147,6 +170,7 @@ python office-custom/scripts/soffice.py --headless --convert-to pdf output.pptx
 **Dependency:** LibreOffice must be installed separately.
 - macOS: `brew install --cask libreoffice`
 - Ubuntu: `apt install libreoffice`
+- Windows: `winget install --id TheDocumentFoundation.LibreOffice --source winget`
 
 ---
 
