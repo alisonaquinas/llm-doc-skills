@@ -96,7 +96,7 @@ each entry shaped like this:
 | `summary.duplicate_media_wasted_bytes` | int | Bytes that would be saved if media were deduplicated. |
 | `summary.inline_xmlns_per_slide` | object | Per-slide count of `xmlns:*` attributes (root + inline). |
 | `summary.rel_ids_canonical` / `summary.rel_ids_random_hex` | int | Relationship-ID style counts. |
-| `findings[].code` | string | Stable identifier (`exporter-fragile`, `creator-fragile`, `image-duplication`, `inline-xmlns-spam`, `content-types-default-xml`, `slideLayout1-missing`, `theme-misplaced`, `rel-id-random-hex`, `empty-xfrm`, `app-slide-mismatch`, `app-notes-mismatch`, `app-missing`, `content-types-missing`, `bad-zip`). |
+| `findings[].code` | string | Stable identifier (`exporter-fragile`, `creator-fragile`, `image-duplication`, `inline-xmlns-spam`, `content-types-default-xml`, `slideLayout1-missing`, `theme-misplaced`, `rel-id-random-hex`, `empty-xfrm`, `app-slide-mismatch`, `app-notes-mismatch`, `app-missing`, `content-types-missing`, `bad-zip`, `file-missing`, `not-a-file`). |
 | `findings[].severity` | `"info"` \| `"warn"` \| `"fail"` | Per-finding severity. |
 | `findings[].message` | string | Human-readable description. |
 | `findings[].details` | object | Code-specific context (path lists, counts, etc.). |

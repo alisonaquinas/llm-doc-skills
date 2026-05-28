@@ -432,13 +432,50 @@ def _check_empty_xfrm(zf: zipfile.ZipFile, report: Report) -> None:
 
 def check(path: Path) -> Report:
     report = Report(path=str(path))
+
+    if not path.exists():
+        report.add(
+            code="file-missing",
+            severity="fail",
+            message=f"File not found: {path}",
+        )
+        return report
+
+    if path.is_dir():
+        report.add(
+            code="not-a-file",
+            severity="fail",
+            message=(
+                f"{path} is a directory. Pass a .pptx file path, not a folder."
+            ),
+        )
+        return report
+
     try:
         zf = zipfile.ZipFile(path, "r")
     except zipfile.BadZipFile as exc:
+        suffix = path.suffix.lower()
+        hint = ""
+        if suffix in (".pdf", ".jpg", ".jpeg", ".png", ".gif", ".doc"):
+            hint = (
+                f" The {suffix} extension suggests this is not an OOXML "
+                f"package; this script only inspects .pptx files."
+            )
+        elif suffix != ".pptx":
+            hint = (
+                f" Expected a .pptx file (ZIP-based OOXML package); got "
+                f"{suffix or '<no extension>'}."
+            )
+        else:
+            hint = (
+                " The file has a .pptx extension but cannot be opened as "
+                "a ZIP. It may be truncated, encrypted, or a legacy .ppt "
+                "(BIFF) file with a renamed extension."
+            )
         report.add(
             code="bad-zip",
             severity="fail",
-            message=f"Not a valid ZIP/OOXML file: {exc}",
+            message=f"{path}: not a valid ZIP/OOXML package ({exc}).{hint}",
         )
         return report
 
