@@ -102,6 +102,49 @@ def _read_text(zf: zipfile.ZipFile, name: str) -> str | None:
         return None
 
 
+def _check_core_creator(
+    zf: zipfile.ZipFile,
+    report: Report,
+    application_lower: str,
+) -> None:
+    """Inspect docProps/core.xml for a fragile-producer creator signature.
+
+    Only emits a finding when core.xml names a known-fragile producer AND
+    app.xml's Application field does NOT — i.e. when the creator signature
+    is the only evidence left. If app.xml already flagged the same producer
+    we'd double-report, which adds noise without information.
+    """
+    text = _read_text(zf, "docProps/core.xml")
+    if not text:
+        return
+
+    match = re.search(r"<dc:creator>([^<]*)</dc:creator>", text)
+    creator = match.group(1).strip() if match else ""
+    if not creator:
+        return
+
+    report.summary["creator"] = creator
+    creator_lower = creator.lower()
+    if not any(needle in creator_lower for needle in _FRAGILE_EXPORTERS):
+        return
+
+    # Skip if app.xml already named the same fragile producer.
+    if any(needle in application_lower for needle in _FRAGILE_EXPORTERS):
+        return
+
+    report.add(
+        code="creator-fragile",
+        severity="fail",
+        message=(
+            f"docProps/core.xml dc:creator = {creator!r} names a known-fragile "
+            "producer even though docProps/app.xml does not. PowerPoint's "
+            "repair rewrites app.xml but leaves core.xml alone, so this is "
+            "often the only surviving signature on a laundered deck."
+        ),
+        details={"creator": creator},
+    )
+
+
 def _check_exporter(zf: zipfile.ZipFile, report: Report) -> None:
     text = _read_text(zf, "docProps/app.xml")
     if not text:
@@ -110,13 +153,19 @@ def _check_exporter(zf: zipfile.ZipFile, report: Report) -> None:
             severity="warn",
             message="docProps/app.xml is missing; cannot identify producing tool.",
         )
+        # core.xml may still carry a creator signature even without app.xml.
+        _check_core_creator(zf, report, application_lower="")
         return
 
-    app_match = re.search(r"<ap:Application>([^<]+)</ap:Application>", text)
+    # The extended-properties schema declares the default namespace at the
+    # root, so the Application/Slides/Notes elements appear unprefixed in
+    # real Office output. Aspose and some pipelines emit the `ap:` prefix
+    # explicitly. Match either form.
+    app_match = re.search(r"<(?:ap:)?Application>([^<]+)</(?:ap:)?Application>", text)
     application = app_match.group(1).strip() if app_match else ""
 
-    slides_match = re.search(r"<ap:Slides>(\d+)</ap:Slides>", text)
-    notes_match = re.search(r"<ap:Notes>(\d+)</ap:Notes>", text)
+    slides_match = re.search(r"<(?:ap:)?Slides>(\d+)</(?:ap:)?Slides>", text)
+    notes_match = re.search(r"<(?:ap:)?Notes>(\d+)</(?:ap:)?Notes>", text)
     decl_slides = int(slides_match.group(1)) if slides_match else None
     decl_notes = int(notes_match.group(1)) if notes_match else None
 
@@ -145,6 +194,15 @@ def _check_exporter(zf: zipfile.ZipFile, report: Report) -> None:
             ),
             details={"application": application},
         )
+
+    # Slide / notes count sanity vs actual slides on disk uses the same
+    # prefix-agnostic regex match resolved above.
+
+    # PowerPoint Desktop's repair rewrites docProps/app.xml but does NOT
+    # touch docProps/core.xml. A fragile producer's signature can survive
+    # there even after an Office re-save laundered the Application field —
+    # so check core.xml's <dc:creator> independently.
+    _check_core_creator(zf, report, application_lower=lower)
 
     # Slide / notes count sanity vs actual slides on disk.
     actual_slides = sum(
