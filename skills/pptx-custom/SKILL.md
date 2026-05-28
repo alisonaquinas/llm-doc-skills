@@ -1,6 +1,6 @@
 ---
 name: pptx-custom
-description: "Use this skill any time a .pptx file is involved in any way — as input, output, or both. This includes: creating slide decks, pitch decks, or presentations; reading, parsing, or extracting text from any .pptx file (even if the extracted content will be used elsewhere, like in an email or summary); editing, modifying, or updating existing presentations; combining or splitting slide files; working with templates, layouts, speaker notes, or comments. Trigger whenever the user mentions \"deck,\" \"slides,\" \"presentation,\" or references a .pptx filename, regardless of what they plan to do with the content afterward. If a .pptx file needs to be opened, created, or touched, use this skill."
+description: "Use this skill any time a .pptx file is involved in any way — as input, output, or both. This includes: creating slide decks, pitch decks, or presentations; reading, parsing, or extracting text from any .pptx file (even if the extracted content will be used elsewhere, like in an email or summary); editing, modifying, or updating existing presentations; combining or splitting slide files; working with templates, layouts, speaker notes, or comments; recovering decks that refuse to open in PowerPoint Online or that PowerPoint Desktop opens with a silent \"Repaired\" companion (Walnut Exporter, Aspose, Syncfusion, Spire, GemBox, OpenXML-SDK pipelines, or any non-Office producer). Trigger whenever the user mentions \"deck,\" \"slides,\" \"presentation,\" or references a .pptx filename, regardless of what they plan to do with the content afterward. If a .pptx file needs to be opened, created, or touched, use this skill."
 ---
 
 # PPTX Skill
@@ -8,10 +8,17 @@ description: "Use this skill any time a .pptx file is involved in any way — as
 ## Intent Router
 
 Load sections based on the task:
+- **Edit existing presentation** → ALWAYS run `scripts/check_fragility.py`
+  first, then read [editing.md](editing.md) for the standard unpack/edit/pack
+  workflow. If the fragility check reports any finding, switch to
+  [recovering-fragile-decks.md](recovering-fragile-decks.md).
+- **Fragile / foreign-exporter deck** → Read
+  [recovering-fragile-decks.md](recovering-fragile-decks.md) for
+  canonicalization and byte-level surgical-patch workflows. Required whenever
+  the file was produced by Walnut Exporter, Aspose, Syncfusion, Spire, GemBox,
+  OpenXML SDK pipelines, or any non-Office producer.
 - **Create from scratch** → Read [pptxgenjs.md](pptxgenjs.md) for color
   palettes, typography, and design principles; use the PptxGenJS library
-- **Edit existing presentation** → Read [editing.md](editing.md) for the
-  unpack/edit/pack workflow and slide manipulation patterns
 - **Extract/analyze content** → Use markitdown or thumbnail.py from "Reading Content"
 - **Design guidance** → "Design Ideas" section for color palettes, typography, spacing, and anti-patterns
 - **Visual QA** → "QA (Required)" section for converting to images and inspection workflow
@@ -22,7 +29,10 @@ Load sections based on the task:
 | Task | Guide |
 |------|-------|
 | Read/analyze content | `python -m markitdown presentation.pptx` |
-| Edit or create from template | Read [editing.md](editing.md) |
+| Check before any edit | `python pptx-custom/scripts/check_fragility.py file.pptx` |
+| Edit a healthy deck | Read [editing.md](editing.md) |
+| Recover a Walnut / non-Office deck | Read [recovering-fragile-decks.md](recovering-fragile-decks.md) |
+| Surgical byte-level edit | `python pptx-custom/scripts/patch_slide_xml.py …` |
 | Create from scratch | Read [pptxgenjs.md](pptxgenjs.md) |
 
 ---
@@ -46,8 +56,14 @@ python office-custom/scripts/unpack.py presentation.pptx unpacked/
 
 **Read [editing.md](editing.md) for full details.**
 
-1. Analyze template with `thumbnail.py`
-2. Unpack → manipulate slides → edit content → clean → pack
+1. **Provenance check** — `python pptx-custom/scripts/check_fragility.py file.pptx`.
+   Any finding means switch to
+   [recovering-fragile-decks.md](recovering-fragile-decks.md); a normalizing
+   re-save (python-pptx, ElementTree round-trip in `pack.py`) on a
+   Walnut-style deck can break the file in **both PowerPoint Online and
+   PowerPoint Desktop**, even when LibreOffice still opens it.
+2. Analyze template with `thumbnail.py`
+3. Unpack → manipulate slides → edit content → clean → pack
 
 ---
 
@@ -518,6 +534,11 @@ run.font.color.rgb = RGBColor(0xFF, 0x00, 0x00)
 
 ## See Also
 
+- [`editing.md`](editing.md) — unpack/edit/repack workflow for healthy decks.
+- [`recovering-fragile-decks.md`](recovering-fragile-decks.md) — fragility
+  detection, canonicalization, and byte-level surgical patching for decks
+  produced by Walnut Exporter and other non-Office tools.
+- [`pptxgenjs.md`](pptxgenjs.md) — creating new decks from scratch.
 - **`$raw-document`** — specification-level reference (OOXML/ODF schemas, namespace tables,
   package structure deep-dives, cross-format mapping). Use when this skill's content is
   insufficient or when schema validation, format recovery, or deep PresentationML element
