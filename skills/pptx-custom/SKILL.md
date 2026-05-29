@@ -19,7 +19,10 @@ Load sections based on the task:
   non-Office producer.
 - **Create from scratch** → Read `pptxgenjs.md` for generation mechanics and
   `effective-maintainable-decks.md` for editable, reusable, Office-compatible
-  deck guidance; use the PptxGenJS library
+  deck guidance; use the PptxGenJS library. If the request includes brand or
+  theme inputs, use PptxGenJS theme fonts plus `defineSlideMaster(...)` /
+  `addSlide({ masterName: "..." })`, then verify the generated OOXML theme and
+  layout parts.
 - **Extract/analyze content** → Use markitdown or thumbnail.py from "Reading Content"
 - **Design guidance** → "Design Ideas" section for color palettes, typography,
   spacing, and anti-patterns; use `effective-maintainable-decks.md` when
@@ -31,6 +34,9 @@ Load sections based on the task:
 
 For any `.pptx` request, first identify whether the file is being read, edited,
 created, or visually checked.
+
+Quote file paths in shell commands when they contain spaces; the examples below
+use short placeholder filenames for readability.
 
 ```bash
 # Read slide text and speaker-note content
@@ -46,7 +52,9 @@ python pptx-custom/scripts/check_fragility.py presentation.pptx
 - For editing, stop after `check_fragility.py` if it reports findings and follow
   `recovering-fragile-decks.md`; otherwise follow `editing.md`.
 - For new decks, follow `pptxgenjs.md`, then apply
-  `effective-maintainable-decks.md` before QA.
+  `effective-maintainable-decks.md` before QA. When brand or theme inputs are
+  supplied, confirm the result uses theme fonts and master-backed slide layouts
+  instead of per-slide manual styling.
 - For delivery review, run content extraction plus thumbnail/contact-sheet
   rendering, then complete the QA loop before declaring the deck finished.
 
@@ -60,6 +68,7 @@ python pptx-custom/scripts/check_fragility.py presentation.pptx
 | Recover a Walnut / non-Office deck | Read [recovering-fragile-decks.md](recovering-fragile-decks.md) |
 | Surgical byte-level edit | `python pptx-custom/scripts/patch_slide_xml.py …` |
 | Create from scratch | Read [pptxgenjs.md](pptxgenjs.md) |
+| Create branded/theme deck from scratch | Use [pptxgenjs.md](pptxgenjs.md) brand/theme masters and verify OOXML parts |
 | Make a deck editable and Office-compatible | Read [effective-maintainable-decks.md](effective-maintainable-decks.md) |
 
 ---
@@ -293,7 +302,8 @@ ls -1 "$PWD"/slide-*.jpg
 - `npm install pptxgenjs` - creating from scratch with project-local Node
   scripts. If installed globally, set `NODE_PATH` to `npm root -g` before
   running scripts that call `require("pptxgenjs")`.
-- LibreOffice (`soffice`) - PDF conversion (auto-configured for sandboxed environments via `office-custom/scripts/soffice.py`)
+- LibreOffice (`soffice`) - PDF conversion (auto-configured for sandboxed environments via `office-custom/scripts/soffice.py`).
+  On Windows: `winget install --id TheDocumentFoundation.LibreOffice --source winget`
 - Poppler (`pdftoppm`) - PDF to images
 
 ---

@@ -23,6 +23,10 @@ pptx.title  = "My Presentation";
 pptx.subject = "Topic";
 pptx.author  = "Name";
 pptx.company = "Org";
+pptx.theme = {
+  headFontFace: "Aptos Display",
+  bodyFontFace: "Aptos",
+};
 
 const slide = pptx.addSlide();      // Blank slide
 pptx.writeFile({ fileName: "output.pptx" });   // Save (returns Promise)

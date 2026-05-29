@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-05-29
+
 ### Added
 
 - Added `m365` skill for CLI for Microsoft 365 document-library, SharePoint, SPFx, tenant-inspection, CI/CD, and MCP-server workflows.
@@ -16,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Clarified `pptx-custom` PptxGenJS dependency setup so generated Node scripts use project-local installs or set `NODE_PATH` when relying on global installs.
+- Clarified `pptx-custom` path quoting and Windows LibreOffice setup guidance from a fresh skill test-drive pass.
+- Expanded `pptx-custom` branded PptxGenJS guidance so brand/theme inputs are implemented with theme fonts, master-backed layouts, and OOXML verification.
 
 ### Fixed
 

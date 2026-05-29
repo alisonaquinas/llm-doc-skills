@@ -58,6 +58,162 @@ slide.addText("Key outcomes and next steps", {
 pptx.writeFile({ fileName: "project-update.pptx" });
 ```
 
+## Brand/theme inputs
+
+When the user supplies branding, colors, typography, footer rules, or reusable
+layout direction, encode those decisions before adding slides. A branded deck
+should not be a set of individually styled slides.
+
+Use `pptx.theme` for the deck's heading and body fonts, and use
+`pptx.defineSlideMaster(...)` for repeated backgrounds, color bars, logos,
+footer text, page furniture, slide numbers, and common layout geometry.
+
+```javascript
+const brand = {
+  primary: "0F766E",
+  accent: "F59E0B",
+  dark: "0F172A",
+  light: "F8FAFC",
+  headingFont: "Aptos Display",
+  bodyFont: "Aptos",
+};
+
+pptx.theme = {
+  headFontFace: brand.headingFont,
+  bodyFontFace: brand.bodyFont,
+};
+
+pptx.defineSlideMaster({
+  title: "BRAND_TITLE",
+  background: { color: brand.dark },
+  objects: [
+    {
+      rect: {
+        x: 0,
+        y: 0,
+        w: "100%",
+        h: 0.18,
+        fill: { color: brand.accent },
+        line: { color: brand.accent },
+      },
+    },
+    {
+      text: {
+        text: "ACME STRATEGY",
+        options: {
+          x: 0.5,
+          y: 6.95,
+          w: 4,
+          h: 0.25,
+          fontFace: brand.bodyFont,
+          fontSize: 10,
+          bold: true,
+          color: "CBD5E1",
+          margin: 0,
+        },
+      },
+    },
+  ],
+  slideNumber: { x: 12.2, y: 6.95, color: "CBD5E1", fontSize: 9 },
+});
+
+pptx.defineSlideMaster({
+  title: "BRAND_CONTENT",
+  background: { color: brand.light },
+  objects: [
+    {
+      rect: {
+        x: 0,
+        y: 0,
+        w: "100%",
+        h: 0.16,
+        fill: { color: brand.primary },
+        line: { color: brand.primary },
+      },
+    },
+    {
+      text: {
+        text: "ACME",
+        options: {
+          x: 0.5,
+          y: 6.95,
+          w: 1,
+          h: 0.25,
+          fontFace: brand.bodyFont,
+          fontSize: 10,
+          bold: true,
+          color: brand.primary,
+          margin: 0,
+        },
+      },
+    },
+  ],
+  slideNumber: { x: 12.25, y: 6.95, color: brand.primary, fontSize: 9 },
+});
+
+const titleSlide = pptx.addSlide({ masterName: "BRAND_TITLE" });
+titleSlide.addText("Brand inputs become deck infrastructure", {
+  x: 0.65,
+  y: 1,
+  w: 11.5,
+  h: 0.8,
+  fontFace: brand.headingFont,
+  fontSize: 34,
+  bold: true,
+  color: brand.light,
+});
+
+const contentSlide = pptx.addSlide({ masterName: "BRAND_CONTENT" });
+contentSlide.addText("Use masters for repeated brand furniture", {
+  x: 0.6,
+  y: 0.6,
+  w: 10,
+  h: 0.5,
+  fontFace: brand.headingFont,
+  fontSize: 28,
+  bold: true,
+  color: "111827",
+});
+```
+
+Rules for branded scratch decks:
+
+- Define all masters before adding slides, then create slides with
+  `pptx.addSlide({ masterName: "..." })`.
+- Create a small set of useful masters: title, section divider, content,
+  comparison, dashboard, and appendix only when needed.
+- Put repeated brand furniture on masters. Keep individual slides limited to
+  unique content and intentional one-off exceptions.
+- Use `pptx.theme` for heading/body fonts. PptxGenJS exposes theme-color tokens
+  for object styling, but its scratch theme API is strongest for fonts; if an
+  exact corporate theme color palette must be preserved, start from a `.pptx` or
+  `.potx` template and use the XML editing workflow.
+- Do not set `slide.background` or duplicate logos/footer shapes on every slide
+  when a master can carry that work.
+
+## Brand/theme verification
+
+Visual review is necessary but not sufficient for branded decks. After
+generation, unpack the file and verify that theme and master/layout parts carry
+the reusable decisions:
+
+```bash
+python office-custom/scripts/unpack.py branded.pptx unpacked/ --merge-runs false
+rg -n "BRAND_|Aptos|0F766E|F59E0B" unpacked/ppt/theme unpacked/ppt/slideLayouts unpacked/ppt/slideMasters
+rg -n "slideLayout" unpacked/ppt/slides/_rels
+python pptx-custom/scripts/thumbnail.py branded.pptx branded-contact-sheet.jpg --cols 4 --dpi 120
+```
+
+Confirm these signals:
+
+- `ppt/theme/theme1.xml` contains the requested heading and body fonts.
+- PptxGenJS `defineSlideMaster(...)` output appears in
+  `ppt/slideLayouts/slideLayout*.xml`, with relationships back to
+  `ppt/slideMasters/slideMaster*.xml`.
+- Each branded slide's relationship file points at the intended slide layout.
+- Recurring backgrounds, bars, logos, footers, and slide numbers are not copied
+  as ordinary shapes onto every slide.
+
 ## Layout guidance
 
 - Use `LAYOUT_WIDE` unless the user explicitly asks for a 4:3 deck.
@@ -83,8 +239,11 @@ pptx.writeFile({ fileName: "project-update.pptx" });
   the visible slide.
 - Keep components simple enough for PowerPoint desktop, PowerPoint for the web,
   and common import targets to preserve editability.
-- Switch to template/XML editing when true slide masters, placeholder reuse, or
-  exact brand-template preservation matters more than scratch generation speed.
+- Use `defineSlideMaster(...)` when brand or theme inputs imply repeated
+  backgrounds, furniture, or layout rules.
+- Switch to template/XML editing when placeholder reuse, exact brand-template
+  preservation, or exact custom theme color palettes matter more than scratch
+  generation speed.
 
 ## Useful building blocks
 
