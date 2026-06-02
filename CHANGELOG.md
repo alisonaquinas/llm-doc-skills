@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added `office-custom/scripts/lint_docx.py`, a pre-delivery linter that flags the two most common silent .docx corruptions: package parts (`.rels`/`[Content_Types].xml`) serialized with a namespace prefix, and numbering definitions missing `w16cid:durableId` / `w15:restartNumberingAfterBreak` relative to their siblings. Also checks content-type completeness.
+- Expanded `docx-custom/SKILL.md` with a "Numbering and Lists (XML editing)" subsection (reuse existing `numId`; Word-faithful `durableId`/`restartNumberingAfterBreak`), an "Editing package parts" serialization rule, and a "Verifying Output" note that well-formedness and a LibreOffice render do not guarantee Word opens a file without recovery.
+
+### Fixed
+
+- Fixed `office-custom/scripts/pack.py` re-serializing `.rels` and `[Content_Types].xml` with `ns0:` namespace prefixes (`<ns0:Relationships>` / `<ns0:Types>`). The package parts now keep their default prefix-less namespace, preventing Word from flagging repacked documents for recovery.
+
 ## [1.4.0] - 2026-05-29
 
 ### Added

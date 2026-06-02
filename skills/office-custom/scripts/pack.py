@@ -101,12 +101,29 @@ def fix_xml_space_preserve(text: str) -> tuple[str, int]:
 # XML condensing
 # ---------------------------------------------------------------------------
 
+# OPC package-level namespaces.  These live on the *package* parts
+# ([Content_Types].xml and every *.rels file) as the default (prefix-less)
+# namespace.  They are intentionally NOT in _NAMESPACES below: re-serialising
+# them with any prefix (ElementTree emits <ns0:Types> / <ns0:Relationships>)
+# produces a package that is still well-formed XML — so validate.py passes it —
+# yet Word flags it for recovery and LibreOffice may refuse to open it.  They
+# are handled separately via tostring(default_namespace=...) in condense_xml.
+_PACKAGE_NAMESPACES = {
+    "http://schemas.openxmlformats.org/package/2006/relationships",
+    "http://schemas.openxmlformats.org/package/2006/content-types",
+}
+
+
 def condense_xml(text: str) -> bytes:
     """Remove pretty-print indentation to produce compact XML bytes.
 
     Re-parses the XML and re-serialises without extra whitespace.  Preserves
     the xml:space="preserve" attribute semantics because ElementTree honours
     them during serialisation.
+
+    Package parts ([Content_Types].xml, *.rels) keep their default
+    (prefix-less) namespace so their roots stay <Types>/<Relationships> rather
+    than <ns0:Types>/<ns0:Relationships>.
 
     Args:
         text: Pretty-printed XML string.
@@ -147,10 +164,21 @@ def condense_xml(text: str) -> bytes:
 
     try:
         root = ET.fromstring(text.encode("utf-8"))
-        return ET.tostring(root, encoding="utf-8", xml_declaration=True)
     except ET.ParseError:
         # If the XML can't be re-parsed, fall back to raw bytes.
         return text.encode("utf-8")
+
+    # If this is a package part, register its namespace as the default
+    # (prefix-less) so the root stays <Types>/<Relationships> rather than
+    # <ns0:Types>/<ns0:Relationships>.  This mirrors comment.py's handling.
+    # (default_namespace= can't be used here — package parts carry unqualified
+    # attributes like Id/Type/Target, which that option rejects.)  Only package
+    # parts live in these namespaces, so the empty-prefix registration never
+    # affects document-body parts (which use the w: prefix).
+    root_ns = root.tag[1:root.tag.index("}")] if root.tag.startswith("{") else None
+    if root_ns in _PACKAGE_NAMESPACES:
+        ET.register_namespace("", root_ns)
+    return ET.tostring(root, encoding="utf-8", xml_declaration=True)
 
 
 # ---------------------------------------------------------------------------

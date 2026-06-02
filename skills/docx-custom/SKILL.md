@@ -463,14 +463,52 @@ Validates with auto-repair, condenses XML, and creates DOCX. Use `--validate fal
 **Auto-repair will fix:**
 - `durableId` >= 0x7FFFFFFF (regenerates valid ID)
 - Missing `xml:space="preserve"` on `<w:t>` with whitespace
+- Preserves the default (prefix-less) namespace on `.rels` / `[Content_Types].xml` (no `ns0:` prefixes)
 
 **Auto-repair won't fix:**
 - Malformed XML, invalid element nesting, missing relationships, schema violations
+
+### Editing package parts (`.rels`, `[Content_Types].xml`)
+
+The package parts use a **default (prefix-less) namespace**. If you re-serialize
+them through a generic XML writer that doesn't know that namespace, you get
+`<ns0:Relationships>` / `<ns0:Types>` — still well-formed XML, but Word flags
+the file for recovery and LibreOffice may refuse to open it.
+
+- Preserve the default namespace when re-writing these parts:
+  - `.rels` → `http://schemas.openxmlformats.org/package/2006/relationships`
+  - `[Content_Types].xml` → `http://schemas.openxmlformats.org/package/2006/content-types`
+- With `xml.etree.ElementTree`, call `register_namespace("", uri)` for the part's
+  namespace **right before `tostring`** (only one empty prefix can be registered
+  globally, and these two namespaces differ — so register per file). `pack.py`
+  and `comment.py` already do this; prefer editing part bytes **in place** over
+  round-tripping them through a generic writer.
+- Keep `[Content_Types].xml` as the **first** ZIP entry (`pack.py` handles this).
+- After any content-type edit, ensure every part has a matching `<Override>` or a
+  `<Default>` for its extension — a dropped override silently corrupts the package.
+
+### Verifying Output
+
+**A .docx opening in LibreOffice or passing well-formedness does NOT guarantee
+Word opens it without recovery.** ZIP integrity, XML well-formedness, and a
+clean LibreOffice render are necessary but not sufficient. Before delivering,
+run the pre-delivery lint and, when possible, open the file in Word / Word
+Online:
+
+```bash
+python office-custom/scripts/validate.py output.docx    # structure + well-formedness
+python office-custom/scripts/lint_docx.py output.docx   # silent-corruption signatures
+```
+
+`lint_docx.py` flags the two most common silent corruptions: package parts
+serialized with a namespace prefix, and numbering definitions missing
+`w16cid:durableId` / `w15:restartNumberingAfterBreak` relative to their siblings.
 
 ### Common Pitfalls
 
 - **Replace entire `<w:r>` elements**: When adding tracked changes, replace the whole `<w:r>...</w:r>` block with `<w:del>...<w:ins>...` as siblings. Don't inject tracked change tags inside a run.
 - **Preserve `<w:rPr>` formatting**: Copy the original run's `<w:rPr>` block into your tracked change runs to maintain bold, font size, etc.
+- **Don't prefix package parts**: re-serializing `.rels` / `[Content_Types].xml` with `ns0:` prefixes triggers Word recovery — see "Editing package parts" above.
 
 ---
 
@@ -481,6 +519,50 @@ Validates with auto-repair, condenses XML, and creates DOCX. Use `--validate fal
 - **Element order in `<w:pPr>`**: `<w:pStyle>`, `<w:numPr>`, `<w:spacing>`, `<w:ind>`, `<w:jc>`, `<w:rPr>` last
 - **Whitespace**: Add `xml:space="preserve"` to `<w:t>` with leading/trailing spaces
 - **RSIDs**: Must be 8-digit hex (e.g., `00AB1234`)
+
+### Numbering and Lists (XML editing)
+
+When adding a bullet or numbered list by hand-editing XML, **prefer reusing an
+existing `numId`** from the document's `word/numbering.xml` over fabricating a
+new definition. Most real templates already define bullet and ordered lists —
+scan for an existing `<w:num>` and point at its `w:numId`:
+
+```xml
+<!-- Reuse an existing list definition -->
+<w:p>
+  <w:pPr>
+    <w:pStyle w:val="ListParagraph"/>
+    <w:numPr><w:ilvl w:val="0"/><w:numId w:val="3"/></w:numPr>
+  </w:pPr>
+  <w:r><w:t>List item</w:t></w:r>
+</w:p>
+```
+
+If you **must** create a definition, make it Word-faithful, not merely
+schema-legal. Word rebuilds the whole numbering part on open (its "recovery")
+when injected entries omit metadata that native definitions carry:
+
+- give each new `<w:num>` a **unique `w16cid:durableId`** (scan existing values
+  to avoid collisions) and declare `xmlns:w16cid` on the root;
+- add `w15:restartNumberingAfterBreak="0"` to each new `<w:abstractNum>`;
+- keep `<w:abstractNum>` elements **before** `<w:num>` elements (CT_Numbering order);
+- keep `<w:pPr>` children in schema order inside list paragraphs (`pStyle` →
+  `numPr` → `ind`);
+- **remove any literal leading bullet glyph** (`•`, `-`, `*`) from run text once
+  `<w:numPr>` is attached — the marker belongs in the list definition only.
+
+```xml
+<w:abstractNum w:abstractNumId="5">
+  <w15:restartNumberingAfterBreak w:val="0"/>
+  <w:lvl w:ilvl="0"><w:numFmt w:val="bullet"/><w:lvlText w:val="&#x2022;"/></w:lvl>
+</w:abstractNum>
+<w:num w:numId="7" w16cid:durableId="318492170">
+  <w:abstractNumId w:val="5"/>
+</w:num>
+```
+
+Run `lint_docx.py` (see Verifying Output) to catch numbering entries missing
+these attributes before delivery.
 
 ### Tracked Changes
 
