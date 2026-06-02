@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-06-02
+
 ### Added
 
 - Added `office-custom/scripts/lint_docx.py`, a pre-delivery linter that flags the two most common silent .docx corruptions: package parts (`.rels`/`[Content_Types].xml`) serialized with a namespace prefix, and numbering definitions missing `w16cid:durableId` / `w15:restartNumberingAfterBreak` relative to their siblings. Also checks content-type completeness.
