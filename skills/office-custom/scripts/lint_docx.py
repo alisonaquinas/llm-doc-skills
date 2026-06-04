@@ -32,6 +32,7 @@ Usage:
 
 import argparse
 import posixpath
+import re
 import sys
 import zipfile
 from pathlib import Path
@@ -69,6 +70,44 @@ def _root_has_prefix(raw: bytes) -> bool:
         name = text[lt + 1 : j]
         return ":" in name
     return False
+
+
+_MC_PARTS_RE = re.compile(r"^word/(document\.xml|header\d*\.xml|footer\d*\.xml)$")
+
+
+def _check_mc_ignorable(zf: zipfile.ZipFile, errors: list[str]) -> None:
+    """Every prefix in a root mc:Ignorable must be declared via xmlns:.
+
+    Undeclared prefixes are invalid Markup-Compatibility and make Word run
+    its repair dialog on open.
+    """
+    for name in zf.namelist():
+        if not _MC_PARTS_RE.match(name):
+            continue
+        text = zf.read(name).decode("utf-8", errors="replace")
+        start = text.find("<w:document")
+        if start == -1:
+            start = text.find("<w:hdr")
+        if start == -1:
+            start = text.find("<w:ftr")
+        if start == -1:
+            continue
+        end = text.find(">", start)
+        if end == -1:
+            continue
+        root = text[start : end + 1]
+        match = re.search(r'mc:Ignorable="([^"]*)"', root)
+        if not match:
+            continue
+        declared = set(re.findall(r"xmlns:(\w+)=", root))
+        ignorable = set(match.group(1).split())
+        undeclared = ignorable - declared
+        if undeclared:
+            errors.append(
+                f"{name}: mc:Ignorable lists undeclared prefix(es) "
+                f"{sorted(undeclared)}; every mc:Ignorable prefix must have "
+                f"an in-scope xmlns: declaration or Word will repair the file."
+            )
 
 
 def _check_package_prefixes(zf: zipfile.ZipFile, errors: list[str]) -> None:
@@ -170,6 +209,7 @@ def lint(source: Path, quiet: bool = False) -> bool:
     with zf:
         _check_package_prefixes(zf, errors)
         _check_content_types(zf, errors)
+        _check_mc_ignorable(zf, errors)
         _check_numbering(zf, warnings)
 
     label = source.name

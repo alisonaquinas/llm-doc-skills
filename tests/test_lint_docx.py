@@ -56,6 +56,18 @@ class TestLintDocx(unittest.TestCase):
                 zf.writestr(n, d)
         return out
 
+    def _errors_for(self, members: dict):
+        """Run lint with output captured; return (ok, captured_stdout)."""
+        import contextlib
+        import io as _io
+
+        members = {"[Content_Types].xml": self._COMPLETE_CT, **members}
+        out = self._write(members)
+        buf = _io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            ok = lint_docx.lint(out, quiet=False)
+        return ok, buf.getvalue()
+
     # A content-type-complete CT declaring the fixture's png/jpeg media, so a
     # genuinely clean package passes (the minimal fixture omits image types).
     _COMPLETE_CT = (
@@ -127,6 +139,34 @@ class TestLintDocx(unittest.TestCase):
         # Add an .xyz part with no Default/Override.
         out = self._write({"word/custom.xyz": b"data"})
         self.assertFalse(lint_docx.lint(out, quiet=True))
+
+    def test_undeclared_mc_ignorable_prefix_fails(self):
+        # Root declares only w + mc, but mc:Ignorable lists w14/w15 (undeclared).
+        bad_doc = (
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            '<w:document '
+            'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '
+            'xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" '
+            'mc:Ignorable="w14 w15">'
+            '<w:body><w:p/><w:sectPr/></w:body></w:document>'
+        )
+        ok, output = self._errors_for({"word/document.xml": bad_doc})
+        self.assertFalse(ok)
+        self.assertIn("mc:Ignorable", output)
+        self.assertNotIn("no <Override>", output)
+
+    def test_declared_mc_ignorable_prefixes_pass(self):
+        good_doc = (
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            '<w:document '
+            'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '
+            'xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" '
+            'xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" '
+            'mc:Ignorable="w14">'
+            '<w:body><w:p/><w:sectPr/></w:body></w:document>'
+        )
+        ok, _ = self._errors_for({"word/document.xml": good_doc})
+        self.assertTrue(ok)
 
 
 if __name__ == "__main__":
