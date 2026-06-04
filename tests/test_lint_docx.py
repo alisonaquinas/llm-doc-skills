@@ -168,6 +168,34 @@ class TestLintDocx(unittest.TestCase):
         ok, _ = self._errors_for({"word/document.xml": good_doc})
         self.assertTrue(ok)
 
+    def test_tblborders_after_tbllook_fails(self):
+        bad_doc = (
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+            '<w:body><w:tbl><w:tblPr>'
+            '<w:tblW w:w="9360" w:type="dxa"/>'
+            '<w:tblLook w:val="04A0"/>'
+            '<w:tblBorders><w:top w:val="single"/></w:tblBorders>'
+            '</w:tblPr></w:tbl><w:p/><w:sectPr/></w:body></w:document>'
+        )
+        ok, output = self._errors_for({"word/document.xml": bad_doc})
+        self.assertFalse(ok)
+        self.assertIn("tblBorders", output)
+        self.assertNotIn("no <Override>", output)
+
+    def test_tblborders_before_tbllook_passes(self):
+        good_doc = (
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+            '<w:body><w:tbl><w:tblPr>'
+            '<w:tblW w:w="9360" w:type="dxa"/>'
+            '<w:tblBorders><w:top w:val="single"/></w:tblBorders>'
+            '<w:tblLook w:val="04A0"/>'
+            '</w:tblPr></w:tbl><w:p/><w:sectPr/></w:body></w:document>'
+        )
+        ok, _ = self._errors_for({"word/document.xml": good_doc})
+        self.assertTrue(ok)
+
 
 if __name__ == "__main__":
     unittest.main()

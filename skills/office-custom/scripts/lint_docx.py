@@ -110,6 +110,29 @@ def _check_mc_ignorable(zf: zipfile.ZipFile, errors: list[str]) -> None:
             )
 
 
+def _check_tblpr_order(zf: zipfile.ZipFile, errors: list[str]) -> None:
+    """In every <w:tblPr>, <w:tblBorders> must precede <w:tblLook>."""
+    for name in zf.namelist():
+        if not _MC_PARTS_RE.match(name):
+            continue
+        try:
+            root = ET.fromstring(zf.read(name))
+        except ET.ParseError:
+            continue  # well-formedness is validate.py's job
+        w = f"{{{_W_NS}}}"
+        for tblpr in root.iter(f"{w}tblPr"):
+            children = [child.tag for child in tblpr]
+            borders = f"{w}tblBorders"
+            look = f"{w}tblLook"
+            if borders in children and look in children:
+                if children.index(borders) > children.index(look):
+                    errors.append(
+                        f"{name}: <w:tblPr> has <w:tblBorders> after "
+                        f"<w:tblLook>; OOXML requires tblBorders before "
+                        f"tblLook or Word will repair the table."
+                    )
+
+
 def _check_package_prefixes(zf: zipfile.ZipFile, errors: list[str]) -> None:
     for name in zf.namelist():
         if name.endswith(".rels") or name == "[Content_Types].xml":
@@ -210,6 +233,7 @@ def lint(source: Path, quiet: bool = False) -> bool:
         _check_package_prefixes(zf, errors)
         _check_content_types(zf, errors)
         _check_mc_ignorable(zf, errors)
+        _check_tblpr_order(zf, errors)
         _check_numbering(zf, warnings)
 
     label = source.name
