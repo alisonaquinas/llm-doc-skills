@@ -18,6 +18,7 @@ import unittest
 import zipfile
 from contextlib import contextmanager
 from pathlib import Path
+from xml.etree import ElementTree as ET
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
@@ -108,6 +109,58 @@ class TestPackPreservesPackageNamespaces(unittest.TestCase):
                 doc = zf.read("word/document.xml").decode("utf-8")
             self.assertIn("<w:document", doc)
             self.assertNotIn("ns0:", doc)
+
+    def test_mc_ignorable_prefixes_stay_declared_after_round_trip(self):
+        """Round-tripping must not leave mc:Ignorable prefixes undeclared."""
+        unpack = _load_module("unpack")
+        pack = _load_module("pack")
+
+        document_xml = """\
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document mc:Ignorable="w14 w15 wp14"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+            xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml"
+            xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml"
+            xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing">
+  <w:body>
+    <w:p><w:r><w:t>Text</w:t></w:r></w:p>
+    <w:sectPr/>
+  </w:body>
+</w:document>
+"""
+
+        with _temp_dir("pack-mc-") as tmp:
+            original = tmp / "original.docx"
+            make_minimal_docx(original, document_xml=document_xml)
+            unpacked = tmp / "unpacked"
+            unpack.unpack(original, unpacked, merge_runs=True)
+            output = tmp / "repacked.docx"
+            pack.pack(unpacked, output, original=original, validate=False)
+
+            with zipfile.ZipFile(output, "r") as zf:
+                doc = zf.read("word/document.xml").decode("utf-8")
+
+            self.assertIn('mc:Ignorable="w14 w15 wp14"', doc)
+            self.assertIn('xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml"', doc)
+            self.assertIn('xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml"', doc)
+            self.assertIn(
+                'xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"',
+                doc,
+            )
+
+    def test_mc_ignorable_repair_handles_self_closing_root(self):
+        """Namespace repair must keep self-closing roots well-formed."""
+        pack = _load_module("pack")
+        xml = (
+            '<w:fonts xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" '
+            'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '
+            'mc:Ignorable="w14 w15" />'
+        )
+        output = pack.condense_xml(xml).decode("utf-8")
+        ET.fromstring(output.encode("utf-8"))
+        self.assertIn('xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml"', output)
+        self.assertIn('xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml"', output)
 
 
 if __name__ == "__main__":

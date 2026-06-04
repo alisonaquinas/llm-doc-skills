@@ -63,7 +63,12 @@ python docx-custom/scripts/accept_changes.py input.docx output.docx
 
 ## Creating New Documents
 
-Generate .docx files with JavaScript, then validate. Install: `npm install -g docx`
+Generate .docx files with JavaScript, then validate. Install `docx` in the
+working directory that contains your generation script:
+
+```bash
+npm install docx
+```
 
 ### Setup
 
@@ -74,7 +79,8 @@ const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, ImageR
         PositionalTabAlignment, PositionalTabRelativeTo, PositionalTabLeader,
         TabStopType, TabStopPosition, Column, SectionType,
         TableOfContents, HeadingLevel, BorderStyle, WidthType, ShadingType,
-        VerticalAlign, PageNumber, PageBreak } = require('docx');
+        VerticalAlign, PageNumber, PageBreak, NumberFormat,
+        LineNumberRestartFormat } = require('docx');
 
 const doc = new Document({ sections: [{ children: [/* content */] }] });
 Packer.toBuffer(doc).then(buffer => fs.writeFileSync("doc.docx", buffer));
@@ -86,7 +92,14 @@ After creating the file, validate it. If validation fails, unpack, fix the XML, 
 
 ```bash
 python office-custom/scripts/validate.py doc.docx
+python office-custom/scripts/lint_docx.py doc.docx
 ```
+
+`docx-js` list numbering can produce a `lint_docx.py` warning about missing
+Word-authored numbering metadata (`w16cid:durableId` /
+`w15:restartNumberingAfterBreak`). Treat warnings as review items: verify in
+Word when possible, or unpack/edit `word/numbering.xml` if the document must be
+warning-clean.
 
 ### Page Size
 
@@ -464,6 +477,8 @@ Validates with auto-repair, condenses XML, and creates DOCX. Use `--validate fal
 - `durableId` >= 0x7FFFFFFF (regenerates valid ID)
 - Missing `xml:space="preserve"` on `<w:t>` with whitespace
 - Preserves the default (prefix-less) namespace on `.rels` / `[Content_Types].xml` (no `ns0:` prefixes)
+- Restores known namespace declarations listed in root `mc:Ignorable` when
+  `unpack.py` / XML round-tripping stripped unused declarations
 
 **Auto-repair won't fix:**
 - Malformed XML, invalid element nesting, missing relationships, schema violations
@@ -735,7 +750,8 @@ After running `comment.py` (see Step 2), add markers to document.xml. For replie
 ## Dependencies
 
 - **pandoc**: Text extraction
-- **docx**: `npm install -g docx` (new documents)
+- **docx**: `npm install docx` in the working directory for new-document
+  generation scripts
 - **LibreOffice**: PDF conversion (auto-configured for sandboxed environments via `office-custom/scripts/soffice.py`)
 - **Poppler**: `pdftoppm` for images
 
@@ -867,7 +883,7 @@ cell.merge(table.cell(0, 1))   # Merge cells
 
 ### docx-js (creating new .docx from scratch)
 
-Install: `npm install -g docx`
+Install: `npm install docx`
 Full API: [docx.js.org](https://docx.js.org/)
 
 #### Top-level imports
@@ -881,7 +897,8 @@ const {
   PositionalTab, PositionalTabAlignment, PositionalTabRelativeTo,
   PositionalTabLeader, Column, SectionType, TableOfContents,
   HeadingLevel, BorderStyle, WidthType, ShadingType,
-  VerticalAlign, PageNumber, PageBreak
+  VerticalAlign, PageNumber, PageBreak, NumberFormat,
+  LineNumberRestartFormat
 } = require('docx');
 ```
 

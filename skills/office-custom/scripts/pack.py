@@ -10,6 +10,7 @@ Auto-repair fixes:
   • durableId values >= 0x7FFFFFFF — regenerates a valid 31-bit integer.
   • Missing xml:space="preserve" on <w:t> elements that contain leading or
     trailing whitespace (Word will silently strip the spaces otherwise).
+  • Known namespace declarations missing from a root mc:Ignorable prefix list.
 
 Usage:
     python office-custom/scripts/pack.py unpacked/ output.docx --original document.docx
@@ -113,6 +114,79 @@ _PACKAGE_NAMESPACES = {
     "http://schemas.openxmlformats.org/package/2006/content-types",
 }
 
+_OOXML_NAMESPACES = {
+    "wpc":  "http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas",
+    "cx":   "http://schemas.microsoft.com/office/drawing/2014/chartex",
+    "mc":   "http://schemas.openxmlformats.org/markup-compatibility/2006",
+    "aink": "http://schemas.microsoft.com/office/drawing/2016/ink",
+    "am3d": "http://schemas.microsoft.com/office/drawing/2017/model3d",
+    "o":    "urn:schemas-microsoft-com:office:office",
+    "r":    "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
+    "m":    "http://schemas.openxmlformats.org/officeDocument/2006/math",
+    "v":    "urn:schemas-microsoft-com:vml",
+    "wp14": "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing",
+    "wp":   "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing",
+    "w10":  "urn:schemas-microsoft-com:office:word",
+    "w":    "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
+    "w14":  "http://schemas.microsoft.com/office/word/2010/wordml",
+    "w15":  "http://schemas.microsoft.com/office/word/2012/wordml",
+    "w16":  "http://schemas.microsoft.com/office/word/2018/wordml",
+    "w16cex": "http://schemas.microsoft.com/office/word/2018/wordml/cex",
+    "w16cid": "http://schemas.microsoft.com/office/word/2016/wordml/cid",
+    "w16du": "http://schemas.microsoft.com/office/word/2023/wordml/word16du",
+    "w16sdtdh": "http://schemas.microsoft.com/office/word/2020/wordml/sdtdatahash",
+    "w16se": "http://schemas.microsoft.com/office/word/2015/wordml/symex",
+    "wpg":  "http://schemas.microsoft.com/office/word/2010/wordprocessingGroup",
+    "wpi":  "http://schemas.microsoft.com/office/word/2010/wordprocessingInk",
+    "wne":  "http://schemas.microsoft.com/office/word/2006/wordml",
+    "wps":  "http://schemas.microsoft.com/office/word/2010/wordprocessingShape",
+    "a":    "http://schemas.openxmlformats.org/drawingml/2006/main",
+    "a14":  "http://schemas.microsoft.com/office/drawing/2010/main",
+    "p":    "http://schemas.openxmlformats.org/presentationml/2006/main",
+    "xdr":  "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing",
+    "x":    "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
+}
+
+
+def _ensure_mc_ignorable_namespaces(xml_bytes: bytes) -> bytes:
+    """Declare known root namespaces named by mc:Ignorable.
+
+    ElementTree omits namespace declarations that are not used by element or
+    attribute names. Word still requires every prefix listed in mc:Ignorable to
+    resolve on the root, even if the document body no longer uses that prefix.
+    """
+    text = xml_bytes.decode("utf-8", errors="replace")
+    start = re.search(r"<[A-Za-z_][\w.-]*(?::[\w.-]+)?(?:\s|>)", text)
+    if not start:
+        return xml_bytes
+    tag_start = start.start()
+    tag_end = text.find(">", tag_start)
+    if tag_end == -1:
+        return xml_bytes
+
+    root_tag = text[tag_start : tag_end + 1]
+    match = re.search(r'mc:Ignorable="([^"]*)"', root_tag)
+    if not match:
+        return xml_bytes
+
+    additions = []
+    for prefix in match.group(1).split():
+        if f"xmlns:{prefix}=" in root_tag:
+            continue
+        uri = _OOXML_NAMESPACES.get(prefix)
+        if uri:
+            additions.append(f' xmlns:{prefix}="{uri}"')
+    if not additions:
+        return xml_bytes
+
+    insert_at = tag_end
+    if root_tag.rstrip().endswith("/>"):
+        insert_at = text.rfind("/", tag_start, tag_end)
+        if insert_at == -1:
+            insert_at = tag_end
+    text = text[:insert_at] + "".join(additions) + text[insert_at:]
+    return text.encode("utf-8")
+
 
 def condense_xml(text: str) -> bytes:
     """Remove pretty-print indentation to produce compact XML bytes.
@@ -132,34 +206,7 @@ def condense_xml(text: str) -> bytes:
         Compact XML as UTF-8 bytes, with an XML declaration.
     """
     # Register all known OOXML namespaces to avoid ns0: prefixes.
-    _NAMESPACES = {
-        "wpc":  "http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas",
-        "cx":   "http://schemas.microsoft.com/office/drawing/2014/chartex",
-        "mc":   "http://schemas.openxmlformats.org/markup-compatibility/2006",
-        "aink": "http://schemas.microsoft.com/office/drawing/2016/ink",
-        "am3d": "http://schemas.microsoft.com/office/drawing/2017/model3d",
-        "o":    "urn:schemas-microsoft-com:office:office",
-        "r":    "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
-        "m":    "http://schemas.openxmlformats.org/officeDocument/2006/math",
-        "v":    "urn:schemas-microsoft-com:vml",
-        "wp14": "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing",
-        "wp":   "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing",
-        "w10":  "urn:schemas-microsoft-com:office:word",
-        "w":    "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
-        "w14":  "http://schemas.microsoft.com/office/word/2010/wordml",
-        "w15":  "http://schemas.microsoft.com/office/word/2012/wordml",
-        "w16cid": "http://schemas.microsoft.com/office/word/2016/wordml/cid",
-        "w16se": "http://schemas.microsoft.com/office/word/2015/wordml/symex",
-        "wpg":  "http://schemas.microsoft.com/office/word/2010/wordprocessingGroup",
-        "wpi":  "http://schemas.microsoft.com/office/word/2010/wordprocessingInk",
-        "wne":  "http://schemas.microsoft.com/office/word/2006/wordml",
-        "wps":  "http://schemas.microsoft.com/office/word/2010/wordprocessingShape",
-        "a":    "http://schemas.openxmlformats.org/drawingml/2006/main",
-        "p":    "http://schemas.openxmlformats.org/presentationml/2006/main",
-        "xdr":  "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing",
-        "x":    "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
-    }
-    for prefix, uri in _NAMESPACES.items():
+    for prefix, uri in _OOXML_NAMESPACES.items():
         ET.register_namespace(prefix, uri)
 
     try:
@@ -178,7 +225,8 @@ def condense_xml(text: str) -> bytes:
     root_ns = root.tag[1:root.tag.index("}")] if root.tag.startswith("{") else None
     if root_ns in _PACKAGE_NAMESPACES:
         ET.register_namespace("", root_ns)
-    return ET.tostring(root, encoding="utf-8", xml_declaration=True)
+    data = ET.tostring(root, encoding="utf-8", xml_declaration=True)
+    return _ensure_mc_ignorable_namespaces(data)
 
 
 # ---------------------------------------------------------------------------
