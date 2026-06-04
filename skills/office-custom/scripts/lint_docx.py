@@ -5,8 +5,8 @@ lint_docx.py — Pre-delivery lint for silent .docx corruption.
 validate.py checks ZIP integrity, XML well-formedness, and required parts.
 Those are necessary but NOT sufficient: a file can pass them, render fine in
 LibreOffice, and still make Word display "Word found unreadable content" and
-rebuild the document on open.  This linter flags the two most common silent
-corruptions behind that behaviour:
+rebuild the document on open. This linter flags silent corruptions behind that
+behaviour:
 
   1. Package parts (*.rels, [Content_Types].xml) whose root element carries a
      namespace PREFIX instead of the default (prefix-less) namespace — e.g.
@@ -19,6 +19,16 @@ corruptions behind that behaviour:
        • <w:abstractNum> without w15:restartNumberingAfterBreak
      A hand-injected list definition that omits these (while siblings have
      them) is the classic trigger for Word rebuilding numbering.xml.
+
+  3. word/document.xml (and header/footer parts) whose root mc:Ignorable lists
+     a prefix that is not declared with an in-scope xmlns: — invalid
+     Markup-Compatibility that makes Word repair the file.
+
+  4. <w:tblPr> with <w:tblBorders> after <w:tblLook> (CT_TblPrBase order
+     violation).
+
+  5. A <w:tbl> as the last body block, or two adjacent tables — Word repairs by
+     inserting a spacer paragraph.
 
 It also checks content-type completeness: every part should have a matching
 <Override> or a <Default> for its extension.
