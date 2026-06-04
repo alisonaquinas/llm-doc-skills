@@ -509,6 +509,7 @@ serialized with a namespace prefix, and numbering definitions missing
 - **Replace entire `<w:r>` elements**: When adding tracked changes, replace the whole `<w:r>...</w:r>` block with `<w:del>...<w:ins>...` as siblings. Don't inject tracked change tags inside a run.
 - **Preserve `<w:rPr>` formatting**: Copy the original run's `<w:rPr>` block into your tracked change runs to maintain bold, font size, etc.
 - **Don't prefix package parts**: re-serializing `.rels` / `[Content_Types].xml` with `ns0:` prefixes triggers Word recovery — see "Editing package parts" above.
+- **Don't re-serialize `word/document.xml` with a reduced namespace set**: if you rewrite the part through a generic XML writer, preserve the root's `xmlns:` declarations so every `mc:Ignorable` prefix still resolves. `lint_docx.py` flags undeclared `mc:Ignorable` prefixes, `tblPr` order, and trailing/adjacent tables — run it before delivery (see Verifying Output).
 
 ---
 
@@ -517,6 +518,9 @@ serialized with a namespace prefix, and numbering definitions missing
 ### Schema Compliance
 
 - **Element order in `<w:pPr>`**: `<w:pStyle>`, `<w:numPr>`, `<w:spacing>`, `<w:ind>`, `<w:jc>`, `<w:rPr>` last
+- **Element order in `<w:tblPr>`**: `<w:tblW>` → `<w:tblBorders>` → `<w:tblLook>` (`CT_TblPrBase`). Appending `<w:tblBorders>` after `<w:tblLook>` is a schema violation Word silently repairs. With lxml, insert before `tblLook` (`tblLook.addprevious(borders)`), don't `append`.
+- **Last block before `<w:sectPr>` must be a paragraph**: a `<w:tbl>` cannot be the final body element, and two `<w:tbl>` cannot be directly adjacent — Word repairs by inserting an empty `<w:p/>`. Add a spacer paragraph after any table whose next sibling is `None`, another `<w:tbl>`, or `<w:sectPr>`.
+- **`mc:Ignorable` prefixes must be declared**: every prefix listed in a root `mc:Ignorable="..."` (on `document.xml`, headers, and footers) must resolve to an in-scope `xmlns:` declaration. Re-serializing a part with a *minimized* namespace set while leaving the original `mc:Ignorable` intact leaves prefixes undeclared — invalid Markup-Compatibility that triggers Word recovery even though `validate.py` stays green.
 - **Whitespace**: Add `xml:space="preserve"` to `<w:t>` with leading/trailing spaces
 - **RSIDs**: Must be 8-digit hex (e.g., `00AB1234`)
 
