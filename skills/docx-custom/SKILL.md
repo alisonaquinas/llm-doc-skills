@@ -568,6 +568,19 @@ when injected entries omit metadata that native definitions carry:
 Run `lint_docx.py` (see Verifying Output) to catch numbering entries missing
 these attributes before delivery.
 
+**Suppressing built-in heading auto-numbering.** Some templates' `Heading 1`/
+`Heading 2` styles carry list auto-numbering (e.g. Roman `I, II, III...`). For
+documents with manually-typed clause numbers this double-numbers (renders as
+`III. 1. Scope`). Suppress the style's numbering per heading paragraph with
+`numId="0"` (valid; means "no numbering"):
+
+```xml
+<w:pPr>
+  <w:pStyle w:val="Heading1"/>
+  <w:numPr><w:ilvl w:val="0"/><w:numId w:val="0"/></w:numPr>
+</w:pPr>
+```
+
 ### Tracked Changes
 
 **Insertion:**
@@ -777,6 +790,16 @@ run.font.color.rgb = RGBColor(0xFF, 0x00, 0x00)
 
 **Properties:** `text`, `bold`, `italic`, `underline`, `style`, `font`, `contains_page_break`
 
+> **`run.add_break()` defaults to a line break.** For a page break pass the
+> break type explicitly:
+>
+> ```python
+> from docx.enum.text import WD_BREAK
+> run.add_break(WD_BREAK.PAGE)
+> ```
+>
+> A bare `add_break()` will not paginate.
+
 #### Font
 
 | Property | Type | Notes |
@@ -794,11 +817,18 @@ run.font.color.rgb = RGBColor(0xFF, 0x00, 0x00)
 #### Table, Row, Cell
 
 ```text
-table = doc.add_table(rows=2, cols=3, style="Table Grid")
+table = doc.add_table(rows=2, cols=3)   # apply borders via XML if no style exists
 cell = table.cell(0, 0)
 cell.text = "Header"
 cell.merge(table.cell(0, 1))   # Merge cells
 ```
+
+> **Don't assume `Table Grid` exists.** `table.style = "Table Grid"` raises
+> `KeyError` if the document/template doesn't define that style (many real
+> templates ship only `Normal Table`, which has no borders). Either confirm the
+> style exists in `doc.styles`, or apply borders directly in XML with a
+> `<w:tblBorders>` block (respecting `tblPr` child order — see Schema
+> Compliance).
 
 | Object | Key Methods | Key Properties |
 |--------|------------|---------------|
