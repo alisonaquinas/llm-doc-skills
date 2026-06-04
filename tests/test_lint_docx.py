@@ -196,6 +196,42 @@ class TestLintDocx(unittest.TestCase):
         ok, _ = self._errors_for({"word/document.xml": good_doc})
         self.assertTrue(ok)
 
+    def test_trailing_table_fails(self):
+        # Table is the last body block before sectPr -> Word repairs.
+        bad_doc = (
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+            '<w:body><w:p/><w:tbl><w:tr><w:tc><w:p/></w:tc></w:tr></w:tbl>'
+            '<w:sectPr/></w:body></w:document>'
+        )
+        ok, output = self._errors_for({"word/document.xml": bad_doc})
+        self.assertFalse(ok)
+        self.assertIn("last body block", output)
+        self.assertNotIn("no <Override>", output)
+
+    def test_adjacent_tables_fail(self):
+        bad_doc = (
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+            '<w:body>'
+            '<w:tbl><w:tr><w:tc><w:p/></w:tc></w:tr></w:tbl>'
+            '<w:tbl><w:tr><w:tc><w:p/></w:tc></w:tr></w:tbl>'
+            '<w:p/><w:sectPr/></w:body></w:document>'
+        )
+        ok, output = self._errors_for({"word/document.xml": bad_doc})
+        self.assertFalse(ok)
+        self.assertIn("adjacent", output)
+
+    def test_table_followed_by_paragraph_passes(self):
+        good_doc = (
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+            '<w:body><w:tbl><w:tr><w:tc><w:p/></w:tc></w:tr></w:tbl>'
+            '<w:p/><w:sectPr/></w:body></w:document>'
+        )
+        ok, _ = self._errors_for({"word/document.xml": good_doc})
+        self.assertTrue(ok)
+
 
 if __name__ == "__main__":
     unittest.main()

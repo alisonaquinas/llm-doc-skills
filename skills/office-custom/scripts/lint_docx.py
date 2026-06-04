@@ -133,6 +133,36 @@ def _check_tblpr_order(zf: zipfile.ZipFile, errors: list[str]) -> None:
                     )
 
 
+def _check_table_placement(zf: zipfile.ZipFile, errors: list[str]) -> None:
+    """A table may not be the last body block or directly adjacent to another."""
+    if "word/document.xml" not in zf.namelist():
+        return
+    try:
+        root = ET.fromstring(zf.read("word/document.xml"))
+    except ET.ParseError:
+        return
+    w = f"{{{_W_NS}}}"
+    body = root.find(f"{w}body")
+    if body is None:
+        return
+    blocks = [child for child in body if child.tag in (f"{w}p", f"{w}tbl")]
+    if not blocks:
+        return
+    if blocks[-1].tag == f"{w}tbl":
+        errors.append(
+            "word/document.xml: a <w:tbl> is the last body block; the final "
+            "block before <w:sectPr> must be a paragraph or Word will repair "
+            "the document (insert a spacer <w:p/> after the table)."
+        )
+    for first, second in zip(blocks, blocks[1:]):
+        if first.tag == f"{w}tbl" and second.tag == f"{w}tbl":
+            errors.append(
+                "word/document.xml: two <w:tbl> elements are directly "
+                "adjacent; separate them with a paragraph or Word will repair."
+            )
+            break
+
+
 def _check_package_prefixes(zf: zipfile.ZipFile, errors: list[str]) -> None:
     for name in zf.namelist():
         if name.endswith(".rels") or name == "[Content_Types].xml":
@@ -234,6 +264,7 @@ def lint(source: Path, quiet: bool = False) -> bool:
         _check_content_types(zf, errors)
         _check_mc_ignorable(zf, errors)
         _check_tblpr_order(zf, errors)
+        _check_table_placement(zf, errors)
         _check_numbering(zf, warnings)
 
     label = source.name
