@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.1] - 2026-06-04
+
+### Added
+
+- Added `lint_docx.py` checks for undeclared `mc:Ignorable` prefixes, invalid `w:tblPr` child ordering, and trailing or adjacent body tables that can make Word repair otherwise well-formed `.docx` files.
+- Expanded `docx-custom` guidance for `python-docx` list styles, table mutation pitfalls, `tblPr` ordering, table placement, and `mc:Ignorable` namespace preservation.
+
+### Changed
+
+- Updated `docx-custom` setup and validation instructions to use local `docx` package installs, import the required docx-js numbering symbols, and run `lint_docx.py` after creation as well as after OOXML edits.
+
+### Fixed
+
+- Fixed `office-custom/scripts/pack.py` so unpack/edit/pack round trips restore known namespace declarations referenced by `mc:Ignorable`, including self-closing XML roots, preventing invalid OOXML that triggers Word recovery.
+
 ## [1.5.0] - 2026-06-02
 
 ### Added
