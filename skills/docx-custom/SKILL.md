@@ -500,9 +500,27 @@ python office-custom/scripts/validate.py output.docx    # structure + well-forme
 python office-custom/scripts/lint_docx.py output.docx   # silent-corruption signatures
 ```
 
-`lint_docx.py` flags the two most common silent corruptions: package parts
-serialized with a namespace prefix, and numbering definitions missing
-`w16cid:durableId` / `w15:restartNumberingAfterBreak` relative to their siblings.
+`lint_docx.py` flags the silent corruptions that pass `validate.py` and render
+fine in LibreOffice but make Word repair on open: package parts serialized with
+a namespace prefix; numbering definitions missing `w16cid:durableId` /
+`w15:restartNumberingAfterBreak`; undeclared `mc:Ignorable` prefixes; `tblPr`
+child-order violations; and a table left as the last body block or adjacent to
+another table.
+
+> **Validators passing is not proof Word will open the file cleanly.** When a
+> document still triggers Word's "we found a problem... repair?" dialog, diff
+> your file against Word's `... - Repaired.docx` (unzip both, compare the
+> parts): the structural difference *is* the repair, once you ignore cosmetic
+> resave noise (re-declared namespaces, `rsid`/`paraId`, `proofErr`, run
+> merging, reordered `[Content_Types]`/rels). The `lint_docx.py` checks above
+> cover the repairs seen most often; for anything new, add the signature to the
+> linter.
+>
+> **LibreOffice-based rendering does not reserve space for a tall footer
+> graphic the way Word does.** A full-page render whose body text appears to run
+> into a brand footer in a LibreOffice-converted PDF may be a conversion
+> artifact, not a real Word collision — confirm against Word before treating it
+> as a defect.
 
 ### Common Pitfalls
 
